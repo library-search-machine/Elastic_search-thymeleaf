@@ -1,0 +1,17 @@
+{
+  "properties" : {
+    "id" : {"type" : "keyword"},
+    "bookName" : {"type" : "text",
+      "analyzer" : "korean"},
+    "classNum" : {"type" : "keyword"},
+    "isbn13" : {"type" : "keyword"},
+    "authors" : {"type" : "text",
+      "analyzer" : "korean"},
+    "libraryName" : {"type" : "text",
+      "analyzer" : "korean"},
+    "publicationYear" : {"type" : "keyword"},
+    "publisher" : {"type" : "text",
+      "analyzer" : "korean"},
+    "vol" : {"type" : "keyword"}
+  }
+}

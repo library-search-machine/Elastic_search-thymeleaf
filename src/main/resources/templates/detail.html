@@ -1,0 +1,100 @@
+<html xmlns:th="http://www.thymeleaf.org" id="load">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <!-- bulma CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <title>메인페이지</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+
+
+    </style>
+</head>
+
+<body>
+
+<section class="hero is-info">
+    <div class="hero-body">
+        <p class="title">
+            도서관 데이터 검색
+        </p>
+    </div>
+</section>
+
+
+<br>
+<br>
+<br>
+<p class="control" style="margin-left: 50px; font-size: 25px">도서 상세 정보🔍</p>
+<br>
+<div class="card mb-3" style="max-width: 500px; position: center; margin-left: 50px; float: left; height: 500px" >
+    <div class="row g-0">
+        <div class="col-md-4" style="position: relative">
+            <br>
+            <br>
+            <br>
+            <br>
+            <img th:src="${bookImageURL}" class="img-fluid rounded-start" alt="..." style="width: 450px; margin-left: 20px" >
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <p class="card-text" th:text="'제목: '+${bookname}"></p>
+                <br>
+                <p class="card-text" th:text="'지은이: '+${authors}"></p>
+                <p class="card-text" th:text="'출판사: '+${publisher}"></p>
+                <p class="card-text" th:text="'출판년도: '+${publicationYear}"></p>
+                <br>
+                <p class="card-text" th:text="'묘사: '+${description}"></p>
+                <br>
+                <p class="card-text" th:text="'분류: '+${class_nm}"></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3" style="width:500px; position: center; max-height: 2000px;margin-left: 75px; float: left">
+        <table class="table" style="text-align:center; border:1px solid #dddddd">
+            <thead>
+            <tr>
+                <th style="background-color:#ffffff; text-align:center;">이 책을 가지고 있는 도서관들📕</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="library : ${LibraryList}">
+                <td th:text="${library}"></td>
+            </tr>
+            </tbody>
+        </table>
+</div>
+
+
+
+</body>
+
+</html>
