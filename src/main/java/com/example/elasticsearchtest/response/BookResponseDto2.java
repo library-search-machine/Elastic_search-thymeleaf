@@ -18,5 +18,6 @@ public class BookResponseDto2 {
     private String bookImageURL;
     private String description;
     private String class_nm;
+    private String class_no;
     private Set<String> LibraryList;
 }
