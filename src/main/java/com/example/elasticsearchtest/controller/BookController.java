@@ -38,10 +38,8 @@ public class BookController {
         long startCount = (page - 1) * 30 + 1;
         long endCount = startCount + 30 - 1;
         model.addAttribute("startCount", startCount);
-        model.addAttribute("endCount", endCount);
         if (page / 10 < 1) {
             startIndex=1;
-            System.out.println("startIndex = " + startIndex);
             endIndex=10;
             if(endIndex>=bookList.getTotalPages())
                 endIndex= bookList.getTotalPages();
@@ -60,7 +58,11 @@ public class BookController {
         model.addAttribute("endIndex", endIndex);
 
 
-        //지금 필요한거 지금 total pae
+        if(endCount>bookList.getTotalElements())
+            model.addAttribute("endCount", bookList.getTotalElements());
+        else
+            model.addAttribute("endCount", endCount);
+
 
         model.addAttribute("bookList", bookList);
         model.addAttribute("keyword", keyword);
@@ -78,6 +80,7 @@ public class BookController {
         model.addAttribute("bookImageURL",bookByIsbn.getBookImageURL());
         model.addAttribute("description",bookByIsbn.getDescription());
         model.addAttribute("class_nm",bookByIsbn.getClass_nm());
+        model.addAttribute("class_no",bookByIsbn.getClass_no());
         model.addAttribute("LibraryList",bookByIsbn.getLibraryList());
         return "detail";
     }
