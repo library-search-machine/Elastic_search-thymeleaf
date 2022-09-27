@@ -90,22 +90,23 @@
             <table class="table" style="text-align:center; border:1px solid #dddddd">
                 <thead>
                 <tr>
-                    <th style="background-color:#ffffff; text-align:center;">번호</th>
+
                     <th style="background-color:#ffffff; text-align:center;">제목</th>
                     <th style="background-color:#ffffff; text-align:center;">저자</th>
                     <th style="background-color:#ffffff; text-align:center;">ISBN</th>
                     <th style="background-color:#ffffff; text-align:center;">도서관</th>
+                    <th style="background-color:#ffffff; text-align:center;">Vol.</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="book : ${bookList}">
-                    <td th:text="${book.id}">emil</td>
                     <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
                            aria-label="Previous"><p th:text="${book.title}"></p></a>
                     </td>
                     <td th:text="${book.writer}">stat</td>
                     <td th:text="${book.isbn}">super</td>
                     <td th:text="${book.library}">super</td>
+                    <td th:text="${book.vol}">super</td>
                 </tr>
                 </tbody>
             </table>
