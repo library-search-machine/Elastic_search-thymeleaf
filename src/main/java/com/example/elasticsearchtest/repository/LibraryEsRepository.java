@@ -14,13 +14,17 @@ import java.util.List;
 
 
     @Repository
-    public interface LibraryEsRepository extends ElasticsearchRepository<LibraryEs, Long> {
+    public interface LibraryEsRepository extends ElasticsearchRepository<LibraryEs, String> {
+
+
+        @Query("{\"match\": {\"bookName\": {\"query\":\"?0\"}   }}")//쿼리 문으로 처리
         Page<LibraryEs> findByBookName(String bookname, Pageable pageable);
         Page<LibraryEs> findByAuthors(String authors, Pageable pageable);
 
         Page<LibraryEs> findByIsbn13(String isbn, Pageable pageable);
-        @Query("{\"match\": {\"isbn13\": {\"query\": \"?0\"}}}")//쿼리 문으로 처리
+        @Query("{\"match\": {\"isbn13\": {\"query\": \"?0\"}   }}")//쿼리 문으로 처리
         List<LibraryEs> findByIsbn13All(String isbn);
+
 
 
 
