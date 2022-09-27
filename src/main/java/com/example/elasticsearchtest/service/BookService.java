@@ -6,12 +6,16 @@ import com.example.elasticsearchtest.repository.LibraryEsRepository;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +51,7 @@ public class BookService {
         else
             bookList = libraryEsRepository.findByAuthors(keyword, pageable);
 
+
         Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
 
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
@@ -54,6 +59,24 @@ public class BookService {
         System.out.println("시간차이(m) : using full text search" + secDiffTime);
         return bookResponseDtoList;
     }
+
+
+//    @Transactional
+//    public Page<BookResponseDto> query_test(String keyword, String type, int page) {
+//        PageRequest pageRequest = PageRequest.of(0, 50);
+//        MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("bookName", "keyword");
+//
+//        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(matchQueryBuilder)
+//                .withPageable(pageRequest)
+//                .build();
+//        String query = nativeSearchQuery.getQuery().toString();
+//
+//        System.out.println("query = " + query);
+//
+//        LibraryEsRepository.search()
+//
+//    }
 
 
     @Transactional
@@ -64,7 +87,6 @@ public class BookService {
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
             LibraryList2.add(libraryEs.getLibraryName());
-
         }
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "http://data4library.kr/api/srchDtlList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&loaninfoYN=N&format=json";
@@ -103,6 +125,7 @@ public class BookService {
                     .class_nm((String) book.get("class_nm"))
                     .publicationYear((String) book.get("publication_year"))
                     .bookImageURL((String) book.get("bookImageURL"))
+                    .class_no((String) book.get("class_no"))
                     .description(description)
                     .LibraryList(LibraryList2)
                     .build();
