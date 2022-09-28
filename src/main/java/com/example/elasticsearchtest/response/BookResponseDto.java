@@ -28,9 +28,9 @@ public class BookResponseDto {
     private String library;
 
     public  Page<BookResponseDto> toDtoList(Page<LibraryEs> postList){
-        String match = "[^\uAC00-\uD7A30-9a-zA-Z\\s]";//특수 문자제거
+
         Page<BookResponseDto> ResponsePostList = postList.map(m -> BookResponseDto.builder()
-                .title(m.getBookName().replaceAll(match,""))
+                .title(m.getBookName())
                 .writer(m.getAuthors())
                 .publisher(m.getPublisher())
                 .isbn(m.getIsbn13())
