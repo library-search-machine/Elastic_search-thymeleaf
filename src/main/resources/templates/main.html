@@ -44,17 +44,18 @@
         function search() {
             let find_name = $("select[name=find_name]").val() // 검색 종류
             let search_name = $("#search_bar").val() // 검색 값
+            if(search_name.charAt(search_name.length-1)=='의')
+                search_name+=' ';
+
+
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
 
         function get_detail_page(obj) {
-            console.log($(obj));
             let td = $(obj).children();
-            console.log(td);
             let isbn= td.eq(3).text();
-            console.log(isbn);
             location.href = "/search_isbn?isbn="+isbn;
         }
 
