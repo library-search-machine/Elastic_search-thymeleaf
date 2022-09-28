@@ -1,17 +1,55 @@
 {
-  "properties" : {
-    "id" : {"type" : "keyword"},
-    "bookName" : {"type" : "text",
-      "analyzer" : "korean"},
-    "classNum" : {"type" : "keyword"},
-    "isbn13" : {"type" : "keyword"},
-    "authors" : {"type" : "text",
-      "analyzer" : "korean"},
-    "libraryName" : {"type" : "text",
-      "analyzer" : "korean"},
-    "publicationYear" : {"type" : "keyword"},
-    "publisher" : {"type" : "text",
-      "analyzer" : "korean"},
-    "vol" : {"type" : "keyword"}
+  "properties": {
+    "id": {
+      "type": "keyword"
+    },
+    "bookName": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      },
+      "analyzer": "nori_analyzer"
+    },
+    "classNum": {
+      "type": "keyword"
+    },
+    "isbn13": {
+      "type": "keyword"
+    },
+    "authors": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      },
+      "analyzer": "nori_analyzer"
+    },
+    "libraryName": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      },
+      "analyzer": "nori_analyzer"
+    },
+    "publicationYear": {
+      "type": "keyword"
+    },
+    "publisher": {
+      "type": "text",
+      "fields": {
+        "keyword": {
+          "type": "keyword"
+        }
+      },
+      "analyzer": "nori_analyzer"
+    },
+    "vol": {
+      "type": "keyword"
+    }
   }
 }
