@@ -49,6 +49,15 @@
             }
         }
 
+        function get_detail_page(obj) {
+            console.log($(obj));
+            let td = $(obj).children();
+            console.log(td);
+            let isbn= td.eq(3).text();
+            console.log(isbn);
+            location.href = "/search_isbn?isbn="+isbn;
+        }
+
     </script>
 </head>
 
@@ -86,33 +95,34 @@
 <!--  게시글 카드가 들어가는 공간 -->
 <section class="section">
     <div class="container">
-        <div class="row">
-            <table class="table" style="text-align:center; border:1px solid #dddddd">
-                <thead>
+        <table class="table is-hoverable" tyle="text-align:center;">
+            <thead >
                 <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>저자</th>
+                    <th>ISBN</th>
+                    <th>도서관</th>
+                    <th>Vol.</th>
+                </tr>
+            </thead>
+            <tbody>
+            <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
 
-                    <th style="background-color:#ffffff; text-align:center;">제목</th>
-                    <th style="background-color:#ffffff; text-align:center;">저자</th>
-                    <th style="background-color:#ffffff; text-align:center;">ISBN</th>
-                    <th style="background-color:#ffffff; text-align:center;">도서관</th>
-                    <th style="background-color:#ffffff; text-align:center;">Vol.</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="book : ${bookList}">
-                    <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
-                           aria-label="Previous"><p th:text="${book.title}"></p></a>
-                    </td>
-                    <td th:text="${book.writer}">stat</td>
-                    <td th:text="${book.isbn}">super</td>
-                    <td th:text="${book.library}">super</td>
-                    <td th:text="${book.vol}">super</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+                <td th:text="${status.count + ((current_page - 1) * 30)}"></td>
+                <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
+                       aria-label="Previous"><p th:text="${book.title}"></p></a>
+                </td>
+                <td th:text="${book.writer}">stat</td>
+                <td th:text="${book.isbn}">super</td>
+                <td th:text="${book.library}">super</td>
+                <td th:text="${book.vol}">super</td>
+            </tr>
+            </tbody>
+        </table>
     </div>
 </section>
+
 <div class="text-center m-1" th:if="${totalItems > 0}">
     <nav aria-label="Page navigation example ">
         <ul>
