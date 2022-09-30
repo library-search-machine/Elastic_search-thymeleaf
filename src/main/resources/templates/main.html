@@ -1,12 +1,12 @@
 <html xmlns:th="http://www.thymeleaf.org" id="load">
 <head>
     <!-- Required meta tags -->
-    <meta charset="utf-8">
+    <meta charSet="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossOrigin="anonymous">
 
     <!-- bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
@@ -16,10 +16,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
+            crossOrigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+            crossOrigin="anonymous"></script>
 
     <title>메인페이지</title>
 
@@ -34,19 +34,64 @@
         }
     </style>
 
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal .bg {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        #modalBox {
+            position: absolute;
+            background-color: #fff;
+            width: 400px;
+            height: 320px;
+            padding: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init()
         })
 
-
         //검색해서 그에 맞는 게시글을 보여주는 함수
         function search() {
             let find_name = $("select[name=find_name]").val() // 검색 종류
             let search_name = $("#search_bar").val() // 검색 값
-            if(search_name.charAt(search_name.length-1)=='의')
-                search_name+=' ';
+            if (search_name.charAt(search_name.length - 1) == '의')
+                search_name += ' ';
 
+            if (search_name != '') {
+                location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
+            }
+        }
+
+        //상세검색
+        function advanced_search() {
+            let find_name = "advanced"
+            let title = $("#modal_book_name").val() ? $("#modal_book_name").val() : "@"// 책 이름
+            if (title.charAt(title.length - 1) == '의')
+                title += ' ';
+            let authors = $("#modal_book_authors").val() ? $("#modal_book_authors").val() : "@"// 저자
+            let search_publisher = $("#modal_book_publisher").val() ? $("#modal_book_publisher").val() : "@"// 출판사
+
+            let search_name = title + "-" + authors + "-" + search_publisher
 
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
@@ -55,28 +100,29 @@
 
         function get_detail_page(obj) {
             let td = $(obj).children();
-            let isbn= td.eq(3).text();
-            location.href = "/search_isbn?isbn="+isbn;
+            let isbn = td.eq(3).text();
+            location.href = "/search_isbn?isbn=" + isbn;
         }
 
     </script>
+
 </head>
 
 <body>
 <!--  헤더 부분 -->
-<section class="hero is-info">
-    <div class="hero-body">
-        <p class="title">
+<section className="hero is-info">
+    <div className="hero-body">
+        <p className="title">
             도서관 데이터 검색
         </p>
     </div>
 </section>
 
 <!--  검색 입략 창 -->
-<section class="section">
-    <div class="field has-addons">
-        <p class="control">
-        <span class="select">
+<section className="section">
+    <div className="field has-addons">
+        <p className="control">
+        <span className="select">
           <select name="find_name">
             <option value="title">제목</option>
             <option value="writer">저자</option>
@@ -84,31 +130,72 @@
           </select>
         </span>
         </p>
-        <p class="control is-expanded">
-            <input class="input" type="text" id="search_bar" placeholder="Amount of money">
+        <p className="control is-expanded">
+            <input className="input" type="text" id="search_bar" placeholder="Amount of money">
         </p>
-        <p class="control">
-            <button class="button" onclick="search()">검색</button>
+        <p className="control">
+            <button className="button" onClick="search()">검색</button>
         </p>
+        <div className="openBtn" style="margin-left: 10px">
+            <button className="button is-info is-outlined">상세검색</button>
+        </div>
     </div>
+
 </section>
 
+<!--  상세 검색 모달 -->
+<div className="modal hidden">
+    <div className="bg"></div>
+    <div className="Box" id="modalBox">
+        <div className="field">
+            <label className="label" style="margin: 0">제목</label>
+            <input className="input" type="text" id="modal_book_name" placeholder="제목을 입력해주세요">
+        </div>
+        <div className="field">
+            <label className="label" style="margin: 0">저자</label>
+            <input className="input" type="text" id="modal_book_authors" placeholder="저자를 입력해주세요">
+        </div>
+        <div className="field">
+            <label className="label" style="margin: 0">출판사</label>
+            <input className="input" type="text" id="modal_book_publisher" placeholder="출판사를 입력해주세요">
+        </div>
+        <br>
+        <div className="closeBtn">
+            <button className="button is-info">취소</button>
+            <button className="button is-info" onClick="advanced_search()">검색</button>
+        </div>
+    </div>
+</div>
+<script>
+    const open = () => {
+        document.querySelector(".modal").classList.remove("hidden");
+    }
+
+    const close = () => {
+        document.querySelector(".modal").classList.add("hidden");
+    }
+
+    document.querySelector(".openBtn").addEventListener("click", open);
+    document.querySelector(".closeBtn").addEventListener("click", close);
+    document.querySelector(".bg").addEventListener("click", close);
+</script>
+
 <!--  게시글 카드가 들어가는 공간 -->
-<section class="section">
-    <div class="container">
-        <table class="table is-hoverable" tyle="text-align:center;">
-            <thead >
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>저자</th>
-                    <th>ISBN</th>
-                    <th>도서관</th>
-                    <th>Vol.</th>
-                </tr>
+<section className="section">
+    <div className="container">
+        <table className="table is-hoverable" tyle="text-align:center;">
+            <thead>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>저자</th>
+                <th>ISBN</th>
+                <th>도서관</th>
+                <th>Vol.</th>
+            </tr>
             </thead>
             <tbody>
-            <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
+            <tr th:each="book, status: ${bookList}" onClick="get_detail_page(this)">
 
                 <td th:text="${status.count + ((current_page - 1) * 30)}"></td>
                 <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
@@ -124,39 +211,41 @@
     </div>
 </section>
 
-<div class="text-center m-1" th:if="${totalItems > 0}">
+<div className="text-center m-1" th:if="${totalItems > 0}">
     <nav aria-label="Page navigation example ">
         <ul>
-            <li class="page-item" style="display: inline-block">
-                <a class="page-link"
+            <li className="page-item" style="display: inline-block">
+                <a className="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">처음</span>
                 </a>
             </li>
-            <li class="page-item" style="display: inline-block" th:if="${current_page -10 > 0}">
-                <a class="page-link"
+            <li className="page-item" style="display: inline-block" th:if="${current_page -10 > 0}">
+                <a className="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${startIndex}-1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">이전</span>
                 </a>
             </li>
             <th:block th:with="start = ${startIndex}, end = ${endIndex}">
-                <li class="page-item" style="display: inline-block"
+                <li className="page-item" style="display: inline-block"
                     th:with="start = ${startIndex}, end = ${endIndex}"
                     th:each="pageButton : ${#numbers.sequence(start, end)}">
-                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}" th:text=${pageButton}></a>
+                    <a className="page-link"
+                       th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}"
+                       th:text=${pageButton}></a>
                 </li>
             </th:block>
-            <li class="page-item" style="display: inline-block"  th:if="${endIndex} < ${totalPages}">
-                <a class="page-link"
+            <li className="page-item" style="display: inline-block" th:if="${endIndex} < ${totalPages}">
+                <a className="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${endIndex}+1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">다음</span>
                 </a>
             </li>
-            <li class="page-item" style="display: inline-block" >
-                <a class="page-link"
+            <li className="page-item" style="display: inline-block">
+                <a className="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type} ,page=${totalPages})}"
                    aria-label="Previous">
                     <span aria-hidden="true">끝</span>
