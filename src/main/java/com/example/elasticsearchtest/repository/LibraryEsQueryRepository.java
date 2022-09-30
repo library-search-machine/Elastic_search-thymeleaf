@@ -67,7 +67,7 @@ public class LibraryEsQueryRepository {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if(requestDto.getBookName() != null){
-            boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()));
+            boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()).operator(Operator.fromString("and")));
             boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("bookName",requestDto.getBookName()));
         }
         if (requestDto.getAuthors() != null) {
