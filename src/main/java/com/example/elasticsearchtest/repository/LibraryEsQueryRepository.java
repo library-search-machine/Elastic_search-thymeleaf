@@ -1,7 +1,9 @@
 package com.example.elasticsearchtest.repository;
 
 import com.example.elasticsearchtest.domain.LibraryEs;
+import com.example.elasticsearchtest.dto.libraryRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -58,6 +60,31 @@ public class LibraryEsQueryRepository {
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
         Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
+        return  page;
+    }
+
+    public Page<LibraryEs> findByAll(Pageable pageable, libraryRequestDto requestDto) {
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(requestDto.getBookName() != null){
+            boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()));
+            boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("bookName",requestDto.getBookName()));
+        }
+        if (requestDto.getAuthors() != null) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("authors", requestDto.getAuthors()));
+        }
+        if (requestDto.getPublisher() != null) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("publisher", requestDto.getPublisher()));
+        }
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(pageable)
+                .build();
+
+        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
+        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
+
         return  page;
     }
 
