@@ -2,6 +2,7 @@ package com.example.elasticsearchtest.service;
 
 
 import com.example.elasticsearchtest.domain.LibraryEs;
+import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
 import com.example.elasticsearchtest.repository.LibraryEsRepository;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
@@ -34,6 +35,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class BookService {
 
+    private final LibraryEsQueryRepository libraryEsQueryRepository;
     private final LibraryEsRepository libraryEsRepository;
 
     @Transactional
@@ -43,40 +45,21 @@ public class BookService {
         Page<LibraryEs> bookList;
         long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
         if (type.equals("title"))
-            bookList = libraryEsRepository.findByBookName(keyword, pageable);
+            bookList = libraryEsQueryRepository.findByBookName(pageable,keyword);
 
         else if (type.equals("isbn"))
-            bookList = libraryEsRepository.findByIsbn13(keyword, pageable);
+            bookList = libraryEsQueryRepository.findByIsbn13(pageable,keyword);
 
         else
-            bookList = libraryEsRepository.findByAuthors(keyword, pageable);
-
-
-        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
+            bookList = libraryEsQueryRepository.findByAuthors(pageable,keyword);
 
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
         long secDiffTime = (afterTime - beforeTime);
-        System.out.println("시간차이(m) : using full text search" + secDiffTime);
+        System.out.println("시간차이(ms) : " + secDiffTime);
+
+        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
         return bookResponseDtoList;
     }
-
-
-//    @Transactional
-//    public Page<BookResponseDto> query_test(String keyword, String type, int page) {
-//        PageRequest pageRequest = PageRequest.of(0, 50);
-//        MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("bookName", "keyword");
-//
-//        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(matchQueryBuilder)
-//                .withPageable(pageRequest)
-//                .build();
-//        String query = nativeSearchQuery.getQuery().toString();
-//
-//        System.out.println("query = " + query);
-//
-//        LibraryEsRepository.search()
-//
-//    }
 
 
     @Transactional
