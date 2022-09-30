@@ -17,7 +17,11 @@ configurations {
 repositories {
     mavenCentral()
 }
-
+dependencyManagement {
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.3"
+    }
+}
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -34,6 +38,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.poi/poi
     implementation 'org.apache.poi:poi:4.0.0'
     implementation 'org.apache.poi:poi-ooxml:4.0.0'
+
+    implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
 }
 
 tasks.named('test') {
