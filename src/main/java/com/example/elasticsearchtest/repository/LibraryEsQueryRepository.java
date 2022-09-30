@@ -1,20 +1,20 @@
 package com.example.elasticsearchtest.repository;
 
 import com.example.elasticsearchtest.domain.LibraryEs;
+import com.example.elasticsearchtest.dto.libraryRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
-import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.*;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
-import org.springframework.data.elasticsearch.core.SearchHitSupport;
-import org.springframework.data.elasticsearch.core.SearchHits;
-import org.springframework.data.elasticsearch.core.SearchPage;
+import org.springframework.data.elasticsearch.core.*;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Repository;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 @Primary
@@ -22,7 +22,8 @@ import org.springframework.stereotype.Repository;
 public class LibraryEsQueryRepository {
 
     private final ElasticsearchOperations operations;
-    public Page<LibraryEs> findByBookName(Pageable pageable,String keyword) {
+    public List<LibraryEs> findByBookName(String keyword) {
+        Pageable pageable = PageRequest.of(0, 1000);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
@@ -33,27 +34,34 @@ public class LibraryEsQueryRepository {
                 .build();
         String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
-        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
-
-        return  page;
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        return  list;
     }
-    public Page<LibraryEs> findByAuthors(Pageable pageable,String keyword) {
+    public List<LibraryEs> findByAuthors(String keyword) {
+        Pageable pageable = PageRequest.of(0, 1000);
         MatchPhraseQueryBuilder matchQueryBuilder = QueryBuilders.matchPhraseQuery("authors",keyword);
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchQueryBuilder)
                 .withPageable(pageable)
                 .build();
 
-
-
         String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
-        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
-        return  page;
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+
+
+        return  list;
     }
-    public Page<LibraryEs> findByIsbn13(Pageable pageable,String keyword) {
+    public List<LibraryEs> findByIsbn13(String keyword) {
+        Pageable pageable = PageRequest.of(0, 1000);
         MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery("isbn13",keyword);
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchQueryBuilder)
@@ -61,13 +69,15 @@ public class LibraryEsQueryRepository {
                 .build();
         String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
-        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
-        return  page;
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        return  list;
     }
 
-    public Page<LibraryEs> findByAll(Pageable pageable, libraryRequestDto requestDto) {
-
+    public List<LibraryEs> findByAll(Pageable pageable, libraryRequestDto requestDto) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if(requestDto.getBookName() != null){
             boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()).operator(Operator.fromString("and")));
@@ -83,12 +93,14 @@ public class LibraryEsQueryRepository {
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
-
+        String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
-        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
-
-        return  page;
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        return  list;
     }
 
 
