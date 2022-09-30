@@ -101,7 +101,7 @@
 
         function get_detail_page(obj) {
             let td = $(obj).children();
-            let isbn= td.eq(3).text();
+            let isbn= td.eq(4).text();
             location.href = "/search_isbn?isbn="+isbn;
         }
 
@@ -189,22 +189,21 @@
             <tr>
                 <th>번호</th>
                 <th>제목</th>
+                <th>출판사</th>
                 <th>저자</th>
                 <th>ISBN</th>
-                <th>도서관</th>
                 <th>Vol.</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
-
                 <td th:text="${status.count + ((current_page - 1) * 30)}"></td>
                 <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
                        aria-label="Previous"><p th:text="${book.title}"></p></a>
                 </td>
+                <td th:text="${book.publisher}">stat</td>
                 <td th:text="${book.writer}">stat</td>
                 <td th:text="${book.isbn}">super</td>
-                <td th:text="${book.library}">super</td>
                 <td th:text="${book.vol}">super</td>
             </tr>
             </tbody>
