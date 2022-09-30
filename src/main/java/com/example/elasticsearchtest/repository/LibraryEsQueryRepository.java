@@ -77,7 +77,7 @@ public class LibraryEsQueryRepository {
         return  list;
     }
 
-    public List<LibraryEs> findByAll(Pageable pageable, libraryRequestDto requestDto) {
+    public List<LibraryEs> findByAll(libraryRequestDto requestDto) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
         if(requestDto.getBookName() != null){
             boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()).operator(Operator.fromString("and")));
@@ -91,7 +91,6 @@ public class LibraryEsQueryRepository {
         }
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
-                .withPageable(pageable)
                 .build();
         String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);

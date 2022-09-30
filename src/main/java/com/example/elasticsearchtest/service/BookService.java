@@ -66,7 +66,7 @@ public class BookService {
                         .publisher(!keywordArray[2].equals("@")? keywordArray[2] : null)
                         .build();
 
-                bookList = libraryEsQueryRepository.findByAll(pageable,requestDto);
+                bookList = libraryEsQueryRepository.findByAll(requestDto);
                 break;
             default:
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
@@ -85,8 +85,6 @@ public class BookService {
     @Transactional
     public BookResponseDto2 getBookByIsbn(String isbn) throws MalformedURLException {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
-
-
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
             LibraryList2.add(libraryEs.getLibraryName());
