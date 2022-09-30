@@ -27,7 +27,7 @@ public class BookResponseDto {
     private String isbn;
     private String library;
 
-    public  Page<BookResponseDto> toDtoList(Page<LibraryEs> postList){
+    public static Page<BookResponseDto> toDtoList(Page<LibraryEs> postList){
 
         Page<BookResponseDto> ResponsePostList = postList.map(m -> BookResponseDto.builder()
                 .title(m.getBookName())
