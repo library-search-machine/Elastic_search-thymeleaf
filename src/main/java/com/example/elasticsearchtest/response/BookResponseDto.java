@@ -18,14 +18,11 @@ import java.awt.print.Book;
 public class BookResponseDto {
     private Long id;
     private String title;
-
     private String writer;
-
     private String publisher;
     private String vol;
-
     private String isbn;
-    private String library;
+
 
     public static Page<BookResponseDto> toDtoList(Page<LibraryEs> postList){
 
@@ -35,7 +32,6 @@ public class BookResponseDto {
                 .publisher(m.getPublisher())
                 .isbn(m.getIsbn13())
                 .vol(m.getVol())
-                .library(m.getLibraryName())
                 .build()
         );
         return ResponsePostList;
