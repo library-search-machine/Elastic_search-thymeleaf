@@ -53,12 +53,11 @@ public class BookService {
         else
             bookList = libraryEsQueryRepository.findByAuthors(pageable,keyword);
 
-
-        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
-
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
         long secDiffTime = (afterTime - beforeTime);
-        System.out.println("시간차이(ms) : using full text search   " + secDiffTime);
+        System.out.println("시간차이(ms) : " + secDiffTime);
+
+        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
         return bookResponseDtoList;
     }
 
