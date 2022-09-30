@@ -2,10 +2,9 @@ package com.example.elasticsearchtest.repository;
 
 import com.example.elasticsearchtest.domain.LibraryEs;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.search.sort.FieldSortBuilder;
-import org.elasticsearch.search.sort.SortBuilders;
-import org.elasticsearch.search.sort.SortOrder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +31,11 @@ public class LibraryEsQueryRepository {
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
+        String query = nativeSearchQuery.getQuery().toString();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
         Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
+
         return  page;
     }
     public Page<LibraryEs> findByAuthors(Pageable pageable,String keyword) {
@@ -62,6 +63,31 @@ public class LibraryEsQueryRepository {
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
         Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
+        return  page;
+    }
+
+    public Page<LibraryEs> findByAll(Pageable pageable, libraryRequestDto requestDto) {
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
+        if(requestDto.getBookName() != null){
+            boolQueryBuilder.must(QueryBuilders.matchQuery("bookName",requestDto.getBookName()).operator(Operator.fromString("and")));
+            boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("bookName",requestDto.getBookName()));
+        }
+        if (requestDto.getAuthors() != null) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("authors", requestDto.getAuthors()));
+        }
+        if (requestDto.getPublisher() != null) {
+            boolQueryBuilder.must(QueryBuilders.matchQuery("publisher", requestDto.getPublisher()));
+        }
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(pageable)
+                .build();
+
+        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
+        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
+
         return  page;
     }
 

@@ -34,11 +34,42 @@
         }
     </style>
 
+
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal .bg {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        #modalBox {
+            position: absolute;
+            background-color: #fff;
+            width: 400px;
+            height: 320px;
+            padding: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init()
         })
-
 
         //검색해서 그에 맞는 게시글을 보여주는 함수
         function search() {
@@ -47,6 +78,21 @@
             if(search_name.charAt(search_name.length-1)=='의')
                 search_name+=' ';
 
+            if (search_name != '') {
+                location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
+            }
+        }
+
+        //상세검색
+        function advanced_search() {
+            let find_name = "advanced"
+            let title = $("#modal_book_name").val() ? $("#modal_book_name").val() :"@"// 책 이름
+            if(title.charAt(title.length-1)=='의')
+                title+=' ';
+            let authors = $("#modal_book_authors").val() ? $("#modal_book_authors").val() : "@"// 저자
+            let search_publisher = $("#modal_book_publisher").val() ? $("#modal_book_publisher").val() : "@"// 출판사
+
+            let search_name = title + "-" + authors + "-" + search_publisher
 
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
@@ -60,6 +106,7 @@
         }
 
     </script>
+
 </head>
 
 <body>
@@ -90,22 +137,63 @@
         <p class="control">
             <button class="button" onclick="search()">검색</button>
         </p>
+        <div class="openBtn" style="margin-left: 10px">
+            <button class="button is-info is-outlined">상세검색</button>
+        </div>
     </div>
+
 </section>
+
+<!--  상세 검색 모달 -->
+<div class="modal hidden">
+    <div class="bg"></div>
+    <div class="Box" id="modalBox">
+        <div class="field">
+            <label class="label" style="margin: 0">제목</label>
+            <input class="input" type="text" id="modal_book_name" placeholder="제목을 입력해주세요">
+        </div>
+        <div class="field">
+            <label class="label" style="margin: 0">저자</label>
+            <input class="input" type="text" id="modal_book_authors" placeholder="저자를 입력해주세요">
+        </div>
+        <div class="field">
+            <label class="label" style="margin: 0">출판사</label>
+            <input class="input" type="text" id="modal_book_publisher" placeholder="출판사를 입력해주세요">
+        </div>
+        <br>
+        <div class="closeBtn">
+            <button class="button is-info">취소</button>
+            <button class="button is-info" onclick="advanced_search()">검색</button>
+        </div>
+    </div>
+</div>
+<script>
+    const open = () => {
+        document.querySelector(".modal").classList.remove("hidden");
+    }
+
+    const close = () => {
+        document.querySelector(".modal").classList.add("hidden");
+    }
+
+    document.querySelector(".openBtn").addEventListener("click", open);
+    document.querySelector(".closeBtn").addEventListener("click", close);
+    document.querySelector(".bg").addEventListener("click", close);
+</script>
 
 <!--  게시글 카드가 들어가는 공간 -->
 <section class="section">
     <div class="container">
         <table class="table is-hoverable" tyle="text-align:center;">
             <thead >
-                <tr>
-                    <th>번호</th>
-                    <th>제목</th>
-                    <th>저자</th>
-                    <th>ISBN</th>
-                    <th>도서관</th>
-                    <th>Vol.</th>
-                </tr>
+            <tr>
+                <th>번호</th>
+                <th>제목</th>
+                <th>저자</th>
+                <th>ISBN</th>
+                <th>도서관</th>
+                <th>Vol.</th>
+            </tr>
             </thead>
             <tbody>
             <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
