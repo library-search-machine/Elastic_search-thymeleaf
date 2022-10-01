@@ -46,7 +46,6 @@ public class BookService {
         Pageable pageable = PageRequest.of(page - 1, 30);
         List<LibraryEs> bookList;
         long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
-
         switch (type) {
             case "title" :
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
