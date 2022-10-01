@@ -22,10 +22,7 @@ public class BookResponseDto {
     private String publisher;
     private String vol;
     private String isbn;
-
-
     public static Page<BookResponseDto> toDtoList(Page<LibraryEs> postList){
-
         Page<BookResponseDto> ResponsePostList = postList.map(m -> BookResponseDto.builder()
                 .title(m.getBookName())
                 .writer(m.getAuthors())
