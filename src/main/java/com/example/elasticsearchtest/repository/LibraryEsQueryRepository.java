@@ -48,15 +48,12 @@ public class LibraryEsQueryRepository {
                 .withQuery(matchQueryBuilder)
                 .withPageable(pageable)
                 .build();
-
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
         for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
             list.add(libraryEsSearchHit.getContent());
         }
-
-
         return  list;
     }
     public List<LibraryEs> findByIsbn13(String keyword) {
