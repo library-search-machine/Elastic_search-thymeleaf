@@ -89,7 +89,6 @@ public class LibraryEsQueryRepository {
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
-        System.out.println(nativeSearchQuery.getQuery().toString());
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
@@ -98,6 +97,23 @@ public class LibraryEsQueryRepository {
         }
         return  list;
     }
-
-
+    public List<LibraryEs> recommendKeyword(String keyword) {
+        Pageable pageable = PageRequest.of(0, 20);
+        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword",keyword);
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .should(prefixQueryBuilder);
+        NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withPageable(pageable)
+                .build();
+        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+        String json = nativeSearchQuery.getQuery().toString();
+        System.out.println(json);
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        return  list;
+    }
 }
