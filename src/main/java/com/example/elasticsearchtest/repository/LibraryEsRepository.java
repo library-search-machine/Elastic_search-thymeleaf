@@ -9,6 +9,5 @@ import java.util.List;
 
 public interface LibraryEsRepository extends ElasticsearchRepository<LibraryEs,String> {
     @Query("{\"match\": {\"isbn13\": {\"query\": \"?0\"}   }}")
-//쿼리 문으로 처리
     List<LibraryEs> findByIsbn13All(String isbn);
 }
