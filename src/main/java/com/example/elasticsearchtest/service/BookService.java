@@ -76,6 +76,7 @@ public class BookService {
     @Transactional
     public List<String> recommendKeyword(String keyword) {
         List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
+        list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getIsbn13);//isbn13 으로 중복제거
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
