@@ -31,6 +31,8 @@ public class LibraryEsQueryRepository {
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));//token값들을 가져오고 그 토큰들의 순서대로 검색해서 나온 검색값 return
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withCollapseField("isbn13")
+                .withCollapseField("bookName.keyword")
                 .withPageable(pageable)
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
@@ -47,6 +49,8 @@ public class LibraryEsQueryRepository {
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchQueryBuilder)
                 .withPageable(pageable)
+                .withCollapseField("isbn13")
+                .withCollapseField("bookName.keyword")
                 .build();
 
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
@@ -65,6 +69,8 @@ public class LibraryEsQueryRepository {
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(matchQueryBuilder)
                 .withPageable(pageable)
+                .withCollapseField("isbn13")
+                .withCollapseField("bookName.keyword")
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
@@ -91,6 +97,8 @@ public class LibraryEsQueryRepository {
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
+                .withCollapseField("isbn13")
+                .withCollapseField("bookName.keyword")
                 .build();
         System.out.println(nativeSearchQuery.getQuery().toString());
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);

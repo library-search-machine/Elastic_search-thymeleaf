@@ -70,13 +70,13 @@ public class BookService {
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
                 break;
         }
-        List<LibraryEs> distinct = deduplication((ArrayList<LibraryEs>) bookList,LibraryEs::getIsbn13);
+
         final int start = (int)pageable.getOffset();
-        final int end = Math.min((start + pageable.getPageSize()), distinct.size());
+        final int end = Math.min((start + pageable.getPageSize()), bookList.size());
         long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
         long secDiffTime = (afterTime - beforeTime);
-        //PageImpl<>(distinct.subList(start,end),pageable,distinct.size())
-        return BookResponseDto.toDtoList(new PageImpl<>(distinct.subList(start,end),pageable,distinct.size()));
+        //PageImpl<>(bookList.subList(start,end),pageable,bookList.size())
+        return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start,end),pageable,bookList.size()));
     }
 
 
