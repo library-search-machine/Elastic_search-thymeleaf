@@ -1,18 +1,11 @@
 <html xmlns:th="http://www.thymeleaf.org" id="load">
 <head>
-    <!-- Required meta tags -->
+
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-    <!-- bulma CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -20,14 +13,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
-
     <title>메인페이지</title>
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
     <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
-
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
-
     <style>
         * {
             font-family: 'Jua', sans-serif;
@@ -36,6 +28,10 @@
 
 
     <style>
+        .section p {
+            display: inline;
+
+        }
         .modal {
             position: fixed;
             top: 0;
@@ -65,44 +61,76 @@
             display: none;
         }
     </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
         $(document).ready(function () {
             bsCustomFileInput.init()
         })
+        $(function() {
+            $("#search_bar").autocomplete({
+                source : function(request, response) {
+                    $.ajax({
+                        url : "http://localhost:8080/recommend",
+                        dataType : "json",
+                        data : {
+                            q : request.term
+                        },
+                        success : function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength : 2
+            });
+        });
+        $(function() {
+            $("#modal_book_name").autocomplete({
+                source : function(request, response) {
+                    $.ajax({
+                        url : "http://localhost:8080/recommend",
+                        dataType : "json",
+                        data : {
+                            q : request.term
+                        },
+                        success : function(data) {
+                            response(data);
+                        }
+                    });
+                },
+                minLength : 2
+            });
+        });
 
         //검색해서 그에 맞는 게시글을 보여주는 함수
         function search() {
             let find_name = $("select[name=find_name]").val() // 검색 종류
             let search_name = $("#search_bar").val() // 검색 값
-            if(search_name.charAt(search_name.length-1)=='의')
-                search_name+=' ';
+            if (search_name.charAt(search_name.length - 1) == '의')
+                search_name += ' ';
 
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
-
         //상세검색
         function advanced_search() {
             let find_name = "advanced"
-            let title = $("#modal_book_name").val() ? $("#modal_book_name").val() :"@"// 책 이름
-            if(title.charAt(title.length-1)=='의')
-                title+=' ';
+            let title = $("#modal_book_name").val() ? $("#modal_book_name").val() : "@"// 책 이름
+            if (title.charAt(title.length - 1) == '의')
+                title += ' ';
             let authors = $("#modal_book_authors").val() ? $("#modal_book_authors").val() : "@"// 저자
             let search_publisher = $("#modal_book_publisher").val() ? $("#modal_book_publisher").val() : "@"// 출판사
-
             let search_name = title + "-" + authors + "-" + search_publisher
-
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
-
         function get_detail_page(obj) {
             let td = $(obj).children();
-            let isbn= td.eq(4).text();
-            location.href = "/search_isbn?isbn="+isbn;
+            let isbn = td.eq(4).text();
+            location.href = "/search_isbn?isbn=" + isbn;
         }
 
     </script>
@@ -113,14 +141,13 @@
 <!--  헤더 부분 -->
 <section class="hero is-info">
     <div class="hero-body">
-        <p class="title">
+        <a href="http://localhost:8080" class="title">
             도서관 데이터 검색
-        </p>
+        </a>
     </div>
 </section>
-
-<!--  검색 입략 창 -->
 <section class="section">
+
     <div class="field has-addons">
         <p class="control">
         <span class="select">
@@ -132,7 +159,8 @@
         </span>
         </p>
         <p class="control is-expanded">
-            <input class="input" type="text" id="search_bar" placeholder="Amount of money">
+            <input class="input" type="text" id="search_bar" onkeyup="if(window.event.keyCode==13){search()}"
+                   placeholder="Amount of money">
         </p>
         <p class="control">
             <button class="button" onclick="search()">검색</button>
@@ -141,9 +169,7 @@
             <button class="button is-info is-outlined">상세검색</button>
         </div>
     </div>
-
 </section>
-
 <!--  상세 검색 모달 -->
 <div class="modal hidden">
     <div class="bg"></div>
@@ -171,21 +197,28 @@
     const open = () => {
         document.querySelector(".modal").classList.remove("hidden");
     }
-
     const close = () => {
         document.querySelector(".modal").classList.add("hidden");
     }
-
     document.querySelector(".openBtn").addEventListener("click", open);
     document.querySelector(".closeBtn").addEventListener("click", close);
     document.querySelector(".bg").addEventListener("click", close);
 </script>
-
 <!--  게시글 카드가 들어가는 공간 -->
-<section class="section">
+<section class="section" th:if="${totalItems == 0}" style="text-align:center;">
     <div class="container">
-        <table class="table is-hoverable" tyle="text-align:center;">
-            <thead >
+        <p style="font-size: 35px">검색결과를 찾을 수 없습니다.😅</p>
+        <br>
+        <p style="font-size: 35px">검색어: "</p>
+        <p style="font-size: 35px" th:text="${keyword}"></p>
+        <p style="font-size: 35px">"</p>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container" th:if="${totalItems > 0}">
+        <table class="table is-hoverable" style="text-align:center;">
+            <thead>
             <tr>
                 <th>번호</th>
                 <th>제목</th>
@@ -195,6 +228,11 @@
                 <th>Vol.</th>
             </tr>
             </thead>
+            <tbody th:if="${totalItems == 0}">
+            <tr>
+                <td>검색 결과를 찾을수 없습니다.😅</td>
+            </tr>
+            </tbody>
             <tbody>
             <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
                 <td th:text="${status.count + ((current_page - 1) * 30)}"></td>
@@ -210,7 +248,6 @@
         </table>
     </div>
 </section>
-
 <div class="text-center m-1" th:if="${totalItems > 0}">
     <nav aria-label="Page navigation example ">
         <ul>
@@ -232,17 +269,19 @@
                 <li class="page-item" style="display: inline-block"
                     th:with="start = ${startIndex}, end = ${endIndex}"
                     th:each="pageButton : ${#numbers.sequence(start, end)}">
-                    <a class="page-link" th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}" th:text=${pageButton}></a>
+                    <a class="page-link"
+                       th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}"
+                       th:text=${pageButton}></a>
                 </li>
             </th:block>
-            <li class="page-item" style="display: inline-block"  th:if="${endIndex} < ${totalPages}">
+            <li class="page-item" style="display: inline-block" th:if="${endIndex} < ${totalPages}">
                 <a class="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${endIndex}+1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">다음</span>
                 </a>
             </li>
-            <li class="page-item" style="display: inline-block" >
+            <li class="page-item" style="display: inline-block">
                 <a class="page-link"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type} ,page=${totalPages})}"
                    aria-label="Previous">
@@ -253,8 +292,6 @@
     </nav>
     <span>Showing results # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
 </div>
-
-
 </body>
 
 </html>
