@@ -82,9 +82,7 @@ public class BookService {
         for (LibraryEs libraryEs : list) {
             bookNames.add(libraryEs.getBookName());
         }
-        long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-        long secDiffTime = (afterTime - beforeTime);
-        System.out.println("시간차이(ms) : " + secDiffTime);
+
         Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
         return bookResponseDtoList;
     }

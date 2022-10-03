@@ -32,7 +32,8 @@ public class LibraryEsQueryRepository {
 
     private final ElasticsearchOperations operations;
 
-    public Page<LibraryEs> findByBookName(Pageable pageable,String keyword) {
+    public List<LibraryEs> findByBookName(String keyword) {
+        Pageable pageable = PageRequest.of(0, 1000);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
@@ -42,9 +43,12 @@ public class LibraryEsQueryRepository {
                 .withPageable(pageable)
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        SearchPage<LibraryEs> searchHits = SearchHitSupport.searchPageFor(search, pageable);
-        Page<LibraryEs> page = (Page)SearchHitSupport.unwrapSearchHits(searchHits);
-        return  page;
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        return list;
     }
 
     public List<LibraryEs> findByAuthors(String keyword) {
