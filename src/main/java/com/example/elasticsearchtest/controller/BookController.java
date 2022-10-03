@@ -17,10 +17,7 @@ import java.net.MalformedURLException;
 @RequiredArgsConstructor
 @Controller
 public class BookController {
-
     private final BookService bookService;
-
-
     @GetMapping("/")
     public String main(Model model){
         return "main";
