@@ -34,12 +34,7 @@ public class LibraryEs {
 
     private String vol;
 
-
-
-
-
     public LibraryEs(String bookName,String libraryName,String publisher,String publicationYear,String authors,String classNum,String isbn13,String vol) {
-
         this.bookName =bookName;
         this.libraryName = libraryName;
         this.publisher = publisher;

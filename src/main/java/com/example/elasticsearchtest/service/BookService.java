@@ -12,6 +12,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -36,53 +42,59 @@ public class BookService {
 
     @Transactional
     public Page<BookResponseDto> getBook(String keyword, String type, int page) {
-
         Pageable pageable = PageRequest.of(page - 1, 30);
-        Page<LibraryEs> bookList;
-        long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
-
+        List<LibraryEs> bookList;
         switch (type) {
-            case "title" :
-                bookList = libraryEsQueryRepository.findByBookName(pageable,keyword);
+            case "authors":
+                bookList = libraryEsQueryRepository.findByAuthors(keyword);
                 break;
-            case "authors" :
-                bookList = libraryEsQueryRepository.findByAuthors(pageable,keyword);
+            case "isbn":
+                bookList = libraryEsQueryRepository.findByIsbn13(keyword);
                 break;
-            case "isbn" :
-                bookList = libraryEsQueryRepository.findByIsbn13(pageable,keyword);
-                break;
-            case "advanced" :
+            case "advanced":
                 String[] keywordArray = keyword.split("-");
                 libraryRequestDto requestDto = libraryRequestDto.builder()
                         .bookName(!keywordArray[0].equals("@") ? keywordArray[0] : null)
                         .authors(!keywordArray[1].equals("@") ? keywordArray[1] : null)
-                        .publisher(!keywordArray[2].equals("@")? keywordArray[2] : null)
+                        .publisher(!keywordArray[2].equals("@") ? keywordArray[2] : null)
                         .build();
 
-                bookList = libraryEsQueryRepository.findByAll(pageable,requestDto);
+                bookList = libraryEsQueryRepository.findByAll(requestDto);
                 break;
+            case "title":
             default:
-                bookList = libraryEsQueryRepository.findByBookName(pageable,keyword);
+                bookList = libraryEsQueryRepository.findByBookName(keyword);
                 break;
         }
-
-        long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
-        long secDiffTime = (afterTime - beforeTime);
-        System.out.println("시간차이(ms) : " + secDiffTime);
-
-        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
-        return bookResponseDtoList;
+        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), bookList.size());
+        return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
     }
 
 
     @Transactional
+    public List<String> recommendKeyword(String keyword) {
+        List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
+        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getIsbn13);//isbn13 으로 중복제거
+        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
+        List<String> bookNames = new ArrayList<>();
+        for (LibraryEs libraryEs : list) {
+            bookNames.add(libraryEs.getBookName());
+        }
+        long afterTime = System.currentTimeMillis(); // 코드 실행 후에 시간 받아오기
+        long secDiffTime = (afterTime - beforeTime);
+        System.out.println("시간차이(ms) : " + secDiffTime);
+        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
+        return bookResponseDtoList;
+    }
+
+    @Transactional
     public BookResponseDto2 getBookByIsbn(String isbn) throws MalformedURLException {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
-
-
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
-            LibraryList2.add(libraryEs.getLibrary_name());
+            LibraryList2.add(libraryEs.getLibraryName());
         }
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "http://data4library.kr/api/srchDtlList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&loaninfoYN=N&format=json";
@@ -131,6 +143,15 @@ public class BookService {
         }
 
         return null;
+    }
+
+    public <T> List<T> deduplication(ArrayList<T> list, Function<? super T, ?> key) {
+        return list.stream().filter(deduplication(key)).collect(Collectors.toList());
+    }
+
+    public <T> Predicate<T> deduplication(Function<? super T, ?> key) {
+        Set<Object> set = ConcurrentHashMap.newKeySet();
+        return predicate -> set.add(key.apply(predicate));
     }
 
 
