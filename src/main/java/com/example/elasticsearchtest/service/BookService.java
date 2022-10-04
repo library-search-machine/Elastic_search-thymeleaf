@@ -184,28 +184,10 @@ public class BookService {
 
                list.add(bookResponseDto);
             }
-
-
-//            String description = (String) book.get("description");
-//            description = description.replaceAll("&gt;", "");
-//            description = description.replaceAll("&lt;", "");
-//            BookResponseDto[] bookResponseDtosArray = new BookResponseDto[5];
-//            BookResponseDto2 bookResponseDto = BookResponseDto2.builder()
-//                    .bookName((String) book.get("bookname"))
-//                    .authors((String) book.get("authors"))
-//                    .publisher((String) book.get("publisher"))
-//                    .class_nm((String) book.get("class_nm"))
-//                    .publicationYear((String) book.get("publication_year"))
-//                    .bookImageURL((String) book.get("bookImageURL"))
-//                    .class_no((String) book.get("class_no"))
-//                    .description(description)
-//                    .LibraryList(LibraryList2)
-//                    .build();
             return list;
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return null;
     }
 
