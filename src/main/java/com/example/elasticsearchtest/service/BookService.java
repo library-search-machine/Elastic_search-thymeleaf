@@ -83,7 +83,6 @@ public class BookService {
         for (LibraryEs libraryEs : list) {
             bookNames.add(libraryEs.getBookName());
         }
-
         return bookNames;
     }
 
@@ -142,15 +141,11 @@ public class BookService {
 
         return null;
     }
-
     public <T> List<T> deduplication(ArrayList<T> list, Function<? super T, ?> key) {
         return list.stream().filter(deduplication(key)).collect(Collectors.toList());
     }
-
     public <T> Predicate<T> deduplication(Function<? super T, ?> key) {
         Set<Object> set = ConcurrentHashMap.newKeySet();
         return predicate -> set.add(key.apply(predicate));
     }
-
-
 }
