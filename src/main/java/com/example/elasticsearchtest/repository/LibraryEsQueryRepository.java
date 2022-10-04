@@ -24,20 +24,22 @@ public class LibraryEsQueryRepository {
 
     private final ElasticsearchOperations operations;
     public List<LibraryEs> findByBookName(String keyword) {
-        Pageable pageable = PageRequest.of(0, 1000);
+        Pageable pageable = PageRequest.of(0, 500);
+        CollapseBuilder collapseBuilder = new CollapseBuilder("isbn13");
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));//token값들을 가져오고 그 토큰들의 순서대로 검색해서 나온 검색값 return
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
-                .withCollapseField("isbn13")
-                .withCollapseField("bookName.keyword")
+                .withCollapseBuilder(collapseBuilder)
                 .withPageable(pageable)
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
+        String str = nativeSearchQuery.getQuery().toString();
+        System.out.println(str);
         for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
             list.add(libraryEsSearchHit.getContent());
         }
@@ -46,11 +48,10 @@ public class LibraryEsQueryRepository {
     public List<LibraryEs> findByAuthors(String keyword) {
         Pageable pageable = PageRequest.of(0, 1000);
         MatchPhraseQueryBuilder matchQueryBuilder = QueryBuilders.matchPhraseQuery("authors",keyword);
+
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-                .withQuery(matchQueryBuilder)
+                .withQuery(matchQueryBuilder).withCollapseField("isbn13")
                 .withPageable(pageable)
-                .withCollapseField("isbn13")
-                .withCollapseField("bookName.keyword")
                 .build();
 
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
@@ -73,8 +74,12 @@ public class LibraryEsQueryRepository {
                 .withCollapseField("bookName.keyword")
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+        String str = nativeSearchQuery.getQuery().toString();
+        System.out.println(str);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
+
+
         for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
             list.add(libraryEsSearchHit.getContent());
         }
