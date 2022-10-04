@@ -142,6 +142,7 @@ public class BookService {
         return null;
     }
 
+
     @Transactional
     public List<BookResponseDto3>testjson(String isbn) {
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
@@ -194,11 +195,8 @@ public class BookService {
     public <T> List<T> deduplication(ArrayList<T> list, Function<? super T, ?> key) {
         return list.stream().filter(deduplication(key)).collect(Collectors.toList());
     }
-
     public <T> Predicate<T> deduplication(Function<? super T, ?> key) {
         Set<Object> set = ConcurrentHashMap.newKeySet();
         return predicate -> set.add(key.apply(predicate));
     }
-
-
 }
