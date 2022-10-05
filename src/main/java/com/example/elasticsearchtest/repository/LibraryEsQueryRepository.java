@@ -33,13 +33,16 @@ public class LibraryEsQueryRepository {
     private final ElasticsearchOperations operations;
 
     public List<LibraryEs> findByBookName(String keyword) {
+        CollapseBuilder collapseBuilder = new CollapseBuilder("isbn13");
         Pageable pageable = PageRequest.of(0, 1000);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));//token값들을 가져오고 그 토큰들의 순서대로 검색해서 나온 검색값 return
 
-        NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
+        NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withCollapseBuilder(collapseBuilder)
                 .withPageable(pageable)
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
@@ -111,16 +114,20 @@ public class LibraryEsQueryRepository {
 
     public List<LibraryEs> recommendKeyword(String keyword) {
         Pageable pageable = PageRequest.of(0, 50);
-        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
+        MatchPhrasePrefixQueryBuilder matchPhrasePrefixQueryBuilder = QueryBuilders.matchPhrasePrefixQuery("bookName", keyword);
+        CollapseBuilder collapseBuilder = new CollapseBuilder("isbn13");
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-                .should(prefixQueryBuilder);
+                .should(matchPhrasePrefixQueryBuilder);
+
+
               //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
+                .withCollapseBuilder(collapseBuilder)
                 .withPageable(pageable)
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-        String json = nativeSearchQuery.getQuery().toString();
+        String json = nativeSearchQuery.toString();
         System.out.println(json);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();

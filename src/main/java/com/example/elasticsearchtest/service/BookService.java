@@ -83,8 +83,8 @@ public class BookService {
             bookNames.add(libraryEs.getBookName());
         }
 
-        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
-        return bookResponseDtoList;
+ //       Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookNames);
+        return bookNames;
     }
 
     @Transactional

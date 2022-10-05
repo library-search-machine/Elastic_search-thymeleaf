@@ -8,7 +8,7 @@ import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document(indexName = "test")
+@Document(indexName = "testa")
 @Mapping(mappingPath = "elastic/library-setting.json")
 @Setting(settingPath = "elastic/library-mapping.json")
 public class LibraryEs {

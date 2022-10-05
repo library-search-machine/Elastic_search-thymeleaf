@@ -112,10 +112,12 @@ public class ElasticsearchtestApplication {
                         JSONObject tmp = (JSONObject) infoArr.get(j);
                         JSONObject tmp2 = (JSONObject) tmp.get("doc");
                         IndexQuery query = null;
+                        String equalDelate = (String) tmp2.get("bookname");
+                        equalDelate=equalDelate.replaceAll("="," ");
                         try {
-                            System.out.println(tmp2.get("bookname") + " " + tmp2.get("publisher") + " " + tmp2.get("publication_year") + " " + tmp2.get("authors") + " " + tmp2.get("class_no") + " " + tmp2.get("isbn13") + " " + tmp2.get("vol"));
+
                             query = new IndexQueryBuilder()
-                                    .withObject(new LibraryEs((String) tmp2.get("bookname"), (String) response.get("libNm"), (String) tmp2.get("publisher"), (String) tmp2.get("publication_year"), (String) tmp2.get("authors"), (String) tmp2.get("class_no"), (String) tmp2.get("isbn13"), (String) tmp2.get("vol")))
+                                    .withObject(new LibraryEs( equalDelate, (String) response.get("libNm"), (String) tmp2.get("publisher"), (String) tmp2.get("publication_year"), (String) tmp2.get("authors"), (String) tmp2.get("class_no"), (String) tmp2.get("isbn13"), (String) tmp2.get("vol")))
                                     .build();
 
 
@@ -124,7 +126,7 @@ public class ElasticsearchtestApplication {
                             System.out.println(k.toJSONString());
 
                             query = new IndexQueryBuilder()
-                                    .withObject(new LibraryEs((String) tmp2.get("bookname"), (String) response.get("libNm"), (String) tmp2.get("publisher"),  k.toJSONString(), (String) tmp2.get("authors"), (String) tmp2.get("class_no"), (String) tmp2.get("isbn13"), (String) tmp2.get("vol")))
+                                    .withObject(new LibraryEs(equalDelate, (String) response.get("libNm"), (String) tmp2.get("publisher"),  k.toJSONString(), (String) tmp2.get("authors"), (String) tmp2.get("class_no"), (String) tmp2.get("isbn13"), (String) tmp2.get("vol")))
                                     .build();
                         } finally {
                             queries.add(query);
