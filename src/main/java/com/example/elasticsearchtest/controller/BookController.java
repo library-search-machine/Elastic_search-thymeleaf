@@ -6,7 +6,6 @@ import com.example.elasticsearchtest.response.BookResponseDto2;
 import com.example.elasticsearchtest.response.BookResponseDto3;
 import com.example.elasticsearchtest.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -38,8 +36,7 @@ public class BookController {
                     sb.append(";");
                 }
             }
-            System.out.println(sb.toString());
-            List<BookResponseDto3> booksList = bookService.testjson(sb.toString());
+            List<BookResponseDto3> booksList = bookService.recommend_Book(sb.toString());
             model.addAttribute("list", booksList);
             return "main";
         }
@@ -71,7 +68,6 @@ public class BookController {
             if (page % 10 == 0) {
                 page -= 1;
             }
-            System.out.println("page = " + page);
             startIndex = page / 10 * 10 + 1;
             endIndex = startIndex + 9;
             if (endIndex >= bookList.getTotalPages())
@@ -96,10 +92,9 @@ public class BookController {
 
     @GetMapping("/search_isbn")
     public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) {
-
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
         if(cookies!=null){
-            if (cookies.length == 2) {
+            if (cookies.length == 3) {
                 Cookie deleteCookie = cookies[0];//가장 처음 저장된 쿠키를 삭제
                 deleteCookie.setMaxAge(0);
                 response.addCookie( deleteCookie);
