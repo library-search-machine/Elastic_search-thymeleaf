@@ -110,7 +110,7 @@ public class LibraryEsQueryRepository {
     }
 
     public List<LibraryEs> recommendKeyword(String keyword) {
-        Pageable pageable = PageRequest.of(0, 20);
+        Pageable pageable = PageRequest.of(0, 15);
         PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(prefixQueryBuilder);
@@ -130,7 +130,7 @@ public class LibraryEsQueryRepository {
         return list;
     }
     public List<LibraryEs> recommendKeyword2(String keyword) {
-        Pageable pageable = PageRequest.of(0, 10);
+        Pageable pageable = PageRequest.of(0, 7);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(QueryBuilders.matchPhraseQuery("bookName", keyword));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
