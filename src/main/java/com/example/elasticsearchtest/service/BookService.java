@@ -7,6 +7,7 @@ import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
 import com.example.elasticsearchtest.repository.LibraryEsRepository;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
+import com.example.elasticsearchtest.response.BookResponseDto3;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -77,7 +78,6 @@ public class BookService {
     public List<String> recommendKeyword(String keyword) {
         List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
         list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
-        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getIsbn13);//isbn13 으로 중복제거
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
@@ -87,7 +87,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookResponseDto2 getBookByIsbn(String isbn) throws MalformedURLException {
+    public BookResponseDto2 getBookByIsbn(String isbn) {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
@@ -141,6 +141,57 @@ public class BookService {
 
         return null;
     }
+
+
+    @Transactional
+    public List<BookResponseDto3>testjson(String isbn) {
+        //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
+        String url_address = "https://data4library.kr/api/recommandList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&format=json";
+        try {
+            URL url = new URL(url_address);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-type", "application/json");
+            BufferedReader rd;
+            if (conn.getResponseCode() >= 200 && conn.getResponseCode() <= 300) {
+                rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            } else {
+                rd = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+            }
+            StringBuilder sb = new StringBuilder();
+            String line;
+            while ((line = rd.readLine()) != null) {
+                sb.append(line);
+            }
+            rd.close();
+            conn.disconnect();
+            JSONParser parser = new JSONParser();
+            JSONObject obj = (JSONObject) parser.parse(sb.toString());
+            JSONObject response = (JSONObject) obj.get("response");
+            JSONArray detail = (JSONArray) response.get("docs");
+            List<BookResponseDto3> list= new ArrayList<>();
+            for (int i = 0; i < 10; i++) {
+                JSONObject temp = (JSONObject) detail.get(i);
+                JSONObject book = (JSONObject) temp.get("book");
+                BookResponseDto3 bookResponseDto = BookResponseDto3.builder()
+                        .bookName((String) book.get("bookname"))
+                        .authors((String) book.get("authors"))
+                        .publisher((String) book.get("publisher"))
+                        .class_nm((String) book.get("class_nm"))
+                        .publicationYear((String) book.get("publication_year"))
+                        .bookImageURL((String) book.get("bookImageURL"))
+                        .class_no((String) book.get("class_no"))
+                        .build();
+
+               list.add(bookResponseDto);
+            }
+            return list;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public <T> List<T> deduplication(ArrayList<T> list, Function<? super T, ?> key) {
         return list.stream().filter(deduplication(key)).collect(Collectors.toList());
     }
