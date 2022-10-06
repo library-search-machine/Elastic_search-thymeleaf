@@ -138,6 +138,11 @@
             let isbn = td.eq(4).text();
             location.href = "/search_isbn?isbn=" + isbn;
         }
+        function get_detail_page_recommendBook(obj) {
+            let td = $(obj).children(".row").children(".col-md-8").children(".card-body").children(".isbn13");
+            let isbn = td.eq(0).text();
+            location.href = "/search_isbn?isbn=" + isbn;
+        }
 
     </script>
 
@@ -224,7 +229,7 @@
 <div class="cards" th:if="${not #lists.isEmpty(list)}">
     <p style="font-size: 30px; margin-left:30px ">추천도서 TOP 10😄</p>
     <br>
-    <div class="card mb-3"  style="max-width: 350px; position: center; margin-left: 30px; float: left; height: 300px" th:each="recommendbooks:${list} ">
+    <div class="card mb-3"  style="max-width: 350px; position: center; margin-left: 30px; float: left; height: 300px" th:each="recommendbooks:${list} " onclick="get_detail_page_recommendBook(this)">
         <div class="row g-0" >
             <div class="col-md-4" style="position: relative">
                 <br>
@@ -244,6 +249,8 @@
                     <p class="card-text" th:text="'출판년도: '+${recommendbooks.publicationYear}"></p>
                     <p class="card-text" th:text="'분류: '+${recommendbooks.class_nm}"></p>
                     <p class="card-text" th:text="'분류번호: '+${recommendbooks.class_no}"></p>
+                    <p hidden class="isbn13" th:text="${recommendbooks.isbn13}"></p>
+
                 </div>
             </div>
         </div>

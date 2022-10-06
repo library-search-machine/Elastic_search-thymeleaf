@@ -181,6 +181,7 @@ public class BookService {
                         .publicationYear((String) book.get("publication_year"))
                         .bookImageURL((String) book.get("bookImageURL"))
                         .class_no((String) book.get("class_no"))
+                        .isbn13((String) book.get("isbn13"))
                         .build();
 
                list.add(bookResponseDto);

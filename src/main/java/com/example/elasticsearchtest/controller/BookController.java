@@ -95,7 +95,7 @@ public class BookController {
     }
 
     @GetMapping("/search_isbn")
-    public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) {
+    public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) throws MalformedURLException {
 
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
         if(cookies!=null){
@@ -121,6 +121,7 @@ public class BookController {
         model.addAttribute("class_nm", bookByIsbn.getClass_nm());
         model.addAttribute("class_no", bookByIsbn.getClass_no());
         model.addAttribute("LibraryList", bookByIsbn.getLibraryList());
+
         return "detail";
     }
 
