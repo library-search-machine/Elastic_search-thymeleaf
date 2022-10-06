@@ -81,7 +81,7 @@ public class BookService {
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
-            bookNames.add(libraryEs.getBookName());
+            bookNames.add(libraryEs.getBookName()+" '지은이: "+libraryEs.getAuthors()+"'");
         }
         return bookNames;
     }
@@ -144,7 +144,7 @@ public class BookService {
 
 
     @Transactional
-    public List<BookResponseDto3>testjson(String isbn) {
+    public List<BookResponseDto3>recommend_Book(String isbn) {
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "https://data4library.kr/api/recommandList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&format=json";
         try {
