@@ -72,19 +72,22 @@
         }
 
 
-        $(function () {
+        $(function () {//현재 select가 다를 때 다른 식으로 url을 호출해야함..!
             $("#search_bar").autocomplete({
                 source: function (request, response) {
-                    $.ajax({
-                        url: "http://localhost:8080/recommend",
-                        dataType: "json",
-                        data: {
-                            q: request.term
-                        },
-                        success: function (data) {
-                            response(data);
-                        }
-                    });
+                    let find_name = $("select[name=find_name]").val() // 검색 종류
+                    if(find_name=="title"){
+                        $.ajax({
+                            url: "http://localhost:8080/autocomplete_book",
+                            dataType: "json",
+                            data: {
+                                q: request.term
+                            },
+                            success: function (data) {
+                                response(data);
+                            }
+                        });
+                    }
                 },
                 minLength: 2
             });
@@ -93,7 +96,7 @@
             $("#modal_book_name").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "http://localhost:8080/recommend",
+                        url: "http://localhost:8080/autocomplete_book",
                         dataType: "json",
                         data: {
                             q: request.term
@@ -111,11 +114,10 @@
         function search() {
             let find_name = $("select[name=find_name]").val() // 검색 종류
             let search_name = $("#search_bar").val() // 검색 값
-            let index= search_name.indexOf("'");
-            if(index!=-1)//추천 제목으로 검색을 안할경우에는 '가 붙지 않기 때문에 예외처리를 해야함
-            search_name = search_name.slice(0,index-1);
-            if (search_name.charAt(search_name.length - 1) == '의')//nori는 접미사 '의'를 잘 처리해주지 못하기 때문에 '의'로 단어가 끝나면 임으로 ' '를 붙여 의도적으로 tokenize가 잘되게함
-                search_name += ' ';
+            if(find_name=="title"){
+                if (search_name.charAt(search_name.length - 1) == '의')//nori는 접미사 '의'를 잘 처리해주지 못하기 때문에 '의'로 단어가 끝나면 임으로 ' '를 붙여 의도적으로 tokenize가 잘되게함
+                    search_name += ' ';
+            }
             if (search_name != '') {
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
