@@ -109,7 +109,7 @@ public class LibraryEsQueryRepository {
         return list;
     }
 
-    public List<LibraryEs> recommendKeyword(String keyword) {
+    public List<LibraryEs> autocomplete_book(String keyword) {
         Pageable pageable = PageRequest.of(0, 15);
         PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
@@ -129,7 +129,7 @@ public class LibraryEsQueryRepository {
         }
         return list;
     }
-    public List<LibraryEs> recommendKeyword2(String keyword) {
+    public List<LibraryEs> autocomplete_book2(String keyword) {
         Pageable pageable = PageRequest.of(0, 7);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(QueryBuilders.matchPhraseQuery("bookName", keyword));
@@ -149,4 +149,22 @@ public class LibraryEsQueryRepository {
         }
         return list;
     }
+//    public List<LibraryEs> autocomplete_writer(String keyword) {
+//        Pageable pageable = PageRequest.of(0, 30);
+//        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("authors", keyword);
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+//                .should(prefixQueryBuilder);
+//        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+//                .withQuery(boolQueryBuilder)
+//                .withPageable(pageable)
+//                .build();
+//        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+//        String json = nativeSearchQuery.getQuery().toString();
+//        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+//        List<LibraryEs> list = new ArrayList<>();
+//        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+//            list.add(libraryEsSearchHit.getContent());
+//        }
+//        return list;
+//    }
 }
