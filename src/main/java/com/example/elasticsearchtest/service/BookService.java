@@ -75,16 +75,27 @@ public class BookService {
 
 
     @Transactional
-    public List<String> recommendKeyword(String keyword) {
-        List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
-        list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
+    public List<String> autocomplete_book(String keyword) {
+        List<LibraryEs> list = libraryEsQueryRepository.autocomplete_book(keyword);
+        list.addAll(libraryEsQueryRepository.autocomplete_book2(keyword));
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
-            bookNames.add(libraryEs.getBookName()+" '지은이: "+libraryEs.getAuthors()+"'");
+            bookNames.add(libraryEs.getBookName());
         }
         return bookNames;
     }
+
+//    @Transactional
+//    public List<String> autocomplete_writer(String keyword) {
+//        List<LibraryEs> list = libraryEsQueryRepository.autocomplete_writer(keyword);
+//        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
+//        List<String> bookNames = new ArrayList<>();
+//        for (LibraryEs libraryEs : list) {
+//            bookNames.add(libraryEs.getAuthors()+" '책 제목: "+libraryEs.getBookName()+"'");
+//        }
+//        return bookNames;
+//    }
 
     @Transactional
     public BookResponseDto2 getBookByIsbn(String isbn) {
@@ -182,7 +193,6 @@ public class BookService {
                         .bookImageURL((String) book.get("bookImageURL"))
                         .class_no((String) book.get("class_no"))
                         .build();
-
                list.add(bookResponseDto);
             }
             return list;
