@@ -51,16 +51,6 @@ public class BookService {
             case "isbn":
                 bookList = libraryEsQueryRepository.findByIsbn13(keyword);
                 break;
-            case "advanced":
-                String[] keywordArray = keyword.split("-");
-                libraryRequestDto requestDto = libraryRequestDto.builder()
-                        .bookName(!keywordArray[0].equals("@") ? keywordArray[0] : null)
-                        .authors(!keywordArray[1].equals("@") ? keywordArray[1] : null)
-                        .publisher(!keywordArray[2].equals("@") ? keywordArray[2] : null)
-                        .build();
-
-                bookList = libraryEsQueryRepository.findByAll(requestDto);
-                break;
             case "title":
             default:
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
@@ -72,19 +62,29 @@ public class BookService {
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
     }
 
+    public Page<BookResponseDto> getBook(libraryRequestDto requestDto,  int page) {
+        Pageable pageable = PageRequest.of(page - 1, 30);
+        List<LibraryEs> bookList;
+
+        bookList = libraryEsQueryRepository.findByAll(requestDto);
+
+        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), bookList.size());
+        return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
+    }
 
     @Transactional
     public List<String> recommendKeyword(String keyword) {
         List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getIsbn13);//isbn13 으로 중복제거
-        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
+        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBook_name);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
-            bookNames.add(libraryEs.getBookName());
+            bookNames.add(libraryEs.getBook_name());
         }
 
-        Page<BookResponseDto> bookResponseDtoList = new BookResponseDto().toDtoList(bookList);
-        return bookResponseDtoList;
+        return bookNames;
     }
 
     @Transactional
@@ -92,7 +92,7 @@ public class BookService {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
-            LibraryList2.add(libraryEs.getLibraryName());
+            LibraryList2.add(libraryEs.getLibrary_name());
         }
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "http://data4library.kr/api/srchDtlList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&loaninfoYN=N&format=json";
