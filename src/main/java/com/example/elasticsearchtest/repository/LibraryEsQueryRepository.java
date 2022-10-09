@@ -126,11 +126,13 @@ public class LibraryEsQueryRepository {
     }
 
     public List<LibraryEs> recommendKeyword(String keyword) {
-        Pageable pageable = PageRequest.of(0, 50);
-        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("book_name", keyword);
+
+        Pageable pageable = PageRequest.of(0, 20);
+        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
+
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(prefixQueryBuilder);
-              //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
+        //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
@@ -142,6 +144,26 @@ public class LibraryEsQueryRepository {
         List<LibraryEs> list = new ArrayList<>();
         for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
             list.add(libraryEsSearchHit.getContent());
+        }
+        return list;
+    }
+    public List<LibraryEs> recommendKeyword2(String keyword) {
+        Pageable pageable = PageRequest.of(0, 10);
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .should(QueryBuilders.matchPhraseQuery("bookName", keyword));
+        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withCollapseField("isbn13")
+                .withPageable(pageable)
+                .build();
+        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+        List<LibraryEs> list = new ArrayList<>();
+        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+            list.add(libraryEsSearchHit.getContent());
+        }
+        for (LibraryEs libraryEs : list) {
+            libraryEs.getLibraryName();
         }
         return list;
     }

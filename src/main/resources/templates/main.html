@@ -42,7 +42,6 @@
             justify-content: center;
             align-items: center;
         }
-
         .modal .bg {
             width: 100%;
             height: 100%;
@@ -68,38 +67,43 @@
         $(document).ready(function () {
             bsCustomFileInput.init()
         })
-        $(function() {
+        function reload() {
+          window.location.reload();
+        }
+
+
+        $(function () {
             $("#search_bar").autocomplete({
-                source : function(request, response) {
+                source: function (request, response) {
                     $.ajax({
-                        url : "http://localhost:8080/recommend",
-                        dataType : "json",
-                        data : {
-                            q : request.term
+                        url: "http://localhost:8080/recommend",
+                        dataType: "json",
+                        data: {
+                            q: request.term
                         },
-                        success : function(data) {
+                        success: function (data) {
                             response(data);
                         }
                     });
                 },
-                minLength : 2
+                minLength: 2
             });
         });
-        $(function() {
+        $(function () {
             $("#modal_book_name").autocomplete({
-                source : function(request, response) {
+                source: function (request, response) {
                     $.ajax({
-                        url : "http://localhost:8080/recommend",
-                        dataType : "json",
-                        data : {
-                            q : request.term
+                        url: "http://localhost:8080/recommend",
+                        dataType: "json",
+                        data: {
+                            q: request.term
                         },
-                        success : function(data) {
+                        success: function (data) {
                             response(data);
                         }
                     });
                 },
-                minLength : 2
+                minLength: 2
             });
         });
 
@@ -114,6 +118,7 @@
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
+
         //상세검색
         function advanced_search() {
             let find_name = "advanced"
@@ -127,6 +132,7 @@
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
+
         function get_detail_page(obj) {
             let td = $(obj).children();
             let isbn = td.eq(4).text();
@@ -141,7 +147,7 @@
 <!--  헤더 부분 -->
 <section class="hero is-info">
     <div class="hero-body">
-        <a href="http://localhost:8080" class="title">
+        <a href="http://localhost:8080" class="title" onclick="reload()">
             도서관 데이터 검색
         </a>
     </div>
@@ -214,6 +220,36 @@
         <p style="font-size: 35px">"</p>
     </div>
 </section>
+
+<div class="cards" th:if="${not #lists.isEmpty(list)}">
+    <p style="font-size: 30px; margin-left:30px ">추천도서 TOP 10😄</p>
+    <br>
+    <div class="card mb-3"  style="max-width: 350px; position: center; margin-left: 30px; float: left; height: 300px" th:each="recommendbooks:${list} ">
+        <div class="row g-0" >
+            <div class="col-md-4" style="position: relative">
+                <br>
+                <br>
+                <br>
+                <br>
+                <img th:src="${recommendbooks.getBookImageURL()}"
+                     onerror="this.onerror=null; this.src='https://previews.123rf.com/images/julynx/julynx1408/julynx140800023/30746516-%EC%82%AC%EC%9A%A9%ED%95%A0-%EC%88%98-%EC%97%86%EA%B1%B0%EB%82%98-%EC%9D%B4%EB%AF%B8%EC%A7%80-%EC%82%AC%EC%A7%84-%EC%97%86%EC%9D%8C.jpg';"
+                     class="img-fluid rounded-start" alt="..." style="width: 450px; margin-left: 20px">
+            </div>
+            <div class="col-md-8">
+                <div class="card-body">
+                    <br>
+                    <p class="card-text" th:text="'제목: '+${recommendbooks.bookName}"></p>
+                    <p class="card-text" th:text="'지은이: '+${recommendbooks.authors}"></p>
+                    <p class="card-text" th:text="'출판사: '+${recommendbooks.publisher}"></p>
+                    <p class="card-text" th:text="'출판년도: '+${recommendbooks.publicationYear}"></p>
+                    <p class="card-text" th:text="'분류: '+${recommendbooks.class_nm}"></p>
+                    <p class="card-text" th:text="'분류번호: '+${recommendbooks.class_no}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <section class="section">
     <div class="container" th:if="${totalItems > 0}">
