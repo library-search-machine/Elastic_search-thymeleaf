@@ -85,21 +85,37 @@ public class LibraryEsQueryRepository {
 
     public List<LibraryEs> findByAll(libraryRequestDto requestDto) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        Pageable pageable = PageRequest.of(0, 1000);
-        if (requestDto.getBookName() != null) {
+        RangeQueryBuilder yearRangeQueryBuilder = QueryBuilders.rangeQuery("publicationYear");
+        RangeQueryBuilder genreRangeQueryBuilder = QueryBuilders.rangeQuery("class_num");
+
+        Pageable pageable = PageRequest.of(0, 10000);
+
+        if (requestDto.getBookName() != null) { //제목 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("bookName", requestDto.getBookName()).operator(Operator.fromString("and")));
             boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("bookName", requestDto.getBookName()));
         }
-        if (requestDto.getAuthors() != null) {
+        if (requestDto.getAuthors() != null) { //저자 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("authors", requestDto.getAuthors()));
         }
-        if (requestDto.getPublisher() != null) {
+        if (requestDto.getPublisher() != null) { //출판사 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("publisher", requestDto.getPublisher()));
         }
+        if (!requestDto.getGenre().equals("전체")) { //장르 상세 검색 쿼리 추가
+            int genreNum = Integer.parseInt(requestDto.getGenre());
+            boolQueryBuilder.filter(genreRangeQueryBuilder.gte(genreNum).lt(genreNum+100));
+        }
+        if (requestDto.getLibrary() != null) { //도서관 상세 검색 쿼리 추가
+            boolQueryBuilder.filter(QueryBuilders.matchPhraseQuery("libraryName", requestDto.getLibrary()));
+        }
+
+        //날짜 상세 검색 쿼리 추가
+        boolQueryBuilder.filter(yearRangeQueryBuilder.gte(requestDto.getFirstPublication()).lt(requestDto.getEndPublication()).format("yyyy"));
+
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
+
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
@@ -111,7 +127,7 @@ public class LibraryEsQueryRepository {
 
     public List<LibraryEs> recommendKeyword(String keyword) {
         Pageable pageable = PageRequest.of(0, 50);
-        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
+        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("book_name", keyword);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(prefixQueryBuilder);
               //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
