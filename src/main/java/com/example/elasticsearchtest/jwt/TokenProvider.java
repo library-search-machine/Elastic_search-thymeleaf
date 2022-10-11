@@ -34,7 +34,7 @@ import com.example.elasticsearchtest.domain.Member;
 public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
-    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30 * 24;         //24시간
+    private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;         //30분
     private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
 
     private final Key key;
@@ -60,6 +60,8 @@ public class TokenProvider {
                 .compact();
 
         String refreshToken = Jwts.builder()
+                .setSubject(member.getNickName())
+                .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();

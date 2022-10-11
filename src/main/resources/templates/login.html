@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" id="load">
+<html xmlns:th="http://www.thymeleaf.org" id="load">
 <head>
 
     <meta charset="utf-8">
@@ -27,23 +26,33 @@
         }
     </style>
     <script>
-        function register() {
+        function login() {
+            let obj={
+                "id" : $('#id').val(),
+                "password" : $('#password').val()
+            };
 
-            let id = $("#id").val() // 아이디
-            let password = $("#password").val() // 비밀번호
-            if(id==null||password==null){
+            if(obj.id==null||obj.password==null){
                 alert("아이디나 패스워드의 값이 들어가있지않음");
 
             }else {
                 $.ajax({
-                    url: "http://localhost:8080/register",
+                    type: "post",
+                    headers: {'Content-Type': 'application/json'},
+
+                    data : JSON.stringify(obj),
+                    url: "http://localhost:8080/login",
                     dataType: "json",
-                    data: {
-                        "id": id,
-                        "password": password
-                    },
+
+
                     success: function (data) {
-                        alert(data);
+                        //쿠키올리는 코드 필요함
+
+                    },error: function (request, status, error){
+                        console.log(request)
+                        console.log(status)
+                        console.log(error)
+
                     }
                 });
             }
@@ -60,7 +69,7 @@
                placeholder="Password">
     </p>
     <p class="control">
-        <button class="button" onclick="register()">회원가입</button>
+        <button class="button" onclick="login()">로그인</button>
     </p>
 </div>
 </body>

@@ -8,6 +8,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import javax.persistence.*;
 
 
+import java.io.Serializable;
+
 import static com.example.elasticsearchtest.Errorhandler.ErrorCode.LOGIN_INPUT_INVALID;
 
 @Builder
@@ -16,7 +18,7 @@ import static com.example.elasticsearchtest.Errorhandler.ErrorCode.LOGIN_INPUT_I
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member {
+public class Member implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

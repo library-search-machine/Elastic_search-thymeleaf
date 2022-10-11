@@ -40,7 +40,7 @@ public class RegisterService {
 
 
     public ResponseEntity<MemberResponseDto> login(LoginRequestDto requestDto, HttpServletResponse response) {
-        Member member = isPresentMember(requestDto.getEmail(), false);
+        Member member = isPresentMember(requestDto.getId(), false);
         member.validatePassword(passwordEncoder, requestDto.getPassword());
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
@@ -76,4 +76,6 @@ public class RegisterService {
         response.addHeader("RefreshToken", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
+
+
 }
