@@ -22,6 +22,7 @@ public class RecommendKeywordController {
     public ResponseEntity<String> autocomplete_book(@RequestParam("q") final String keyword) {
         List<String> bookNames = bookService.autocomplete_book(keyword);
         ObjectMapper mapper = new ObjectMapper();
+
         String resp = "";
         try {
             resp = mapper.writeValueAsString(bookNames);
