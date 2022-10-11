@@ -70,8 +70,6 @@
         function reload() {
           window.location.reload();
         }
-
-
         $(function () {//현재 select가 다를 때 다른 식으로 url을 호출해야함..!
             $("#search_bar").autocomplete({
                 source: function (request, response) {
@@ -157,7 +155,6 @@
     </div>
 </section>
 <section class="section">
-
     <div class="field has-addons">
         <p class="control">
         <span class="select">
@@ -248,6 +245,8 @@
                     <p class="card-text" th:text="'출판년도: '+${recommendbooks.publicationYear}"></p>
                     <p class="card-text" th:text="'분류: '+${recommendbooks.class_nm}"></p>
                     <p class="card-text" th:text="'분류번호: '+${recommendbooks.class_no}"></p>
+
+
                 </div>
             </div>
         </div>
@@ -260,7 +259,7 @@
         <table class="table is-hoverable" style="text-align:center;">
             <thead>
             <tr>
-                <th>번호</th>
+                <th>번호        </th>
                 <th>제목</th>
                 <th>출판사</th>
                 <th>저자</th>
@@ -276,13 +275,11 @@
             <tbody>
             <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
                 <td th:text="${status.count + ((current_page - 1) * 30)}"></td>
-                <td><a th:href="@{http://localhost:8080/search_isbn(isbn=${book.isbn})}"
-                       aria-label="Previous"><p th:text="${book.title}"></p></a>
-                </td>
-                <td th:text="${book.publisher}">stat</td>
-                <td th:text="${book.writer}">stat</td>
-                <td th:text="${book.isbn}">super</td>
-                <td th:text="${book.vol}">super</td>
+                <td th:text="${book.title}"></td>
+                <td th:text="${book.publisher}"></td>
+                <td th:text="${book.writer}"></td>
+                <td th:text="${book.isbn}">/td>
+                <td th:text="${book.vol}"></td>
             </tr>
             </tbody>
         </table>
