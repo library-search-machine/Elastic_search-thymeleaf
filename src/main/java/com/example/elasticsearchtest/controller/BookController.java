@@ -1,6 +1,7 @@
 package com.example.elasticsearchtest.controller;
 
 
+import com.example.elasticsearchtest.domain.BooksReview;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
 import com.example.elasticsearchtest.response.BookResponseDto3;
@@ -41,11 +42,7 @@ public class BookController {
             return "main";
         }
         return "main";
-
-
     }
-
-
     @GetMapping("/search")
     public String getBook(@RequestParam() String keyword, @RequestParam() String type, @RequestParam() int page, Model model, HttpServletRequest request, HttpServletResponse response) {
         Page<BookResponseDto> bookList = bookService.getBook(keyword, type, page);
@@ -103,11 +100,23 @@ public class BookController {
         Cookie cookie = new Cookie(isbn, isbn);
         cookie.setMaxAge(600);
         response.addCookie(cookie);//새로운 쿠키를 저장
-
-
+        double score =0;
+        String total;
         //isbn으로 호출을하고 그 책들의 정보들을 호출해 주고 그리고 또 뭐냐 full text index써서 해당 도서관리스트를 리턴을 하자
         BookResponseDto2 bookByIsbn = bookService.getBookByIsbn(isbn);
+        for (BooksReview booksReview : bookByIsbn.getBooksReviewList()) {
+            score+= booksReview.getStars();
+        }
+        if(bookByIsbn.getBooksReviewList().size()==0){
+            total="별점이 아직 등록되지 않았습니다😅";
+        }
+        else{
+            score=score/bookByIsbn.getBooksReviewList().size();
+            total= String.format("%.2f",score);
+        }
+
         model.addAttribute("bookname", bookByIsbn.getBookName());
+        model.addAttribute("total",total);
         model.addAttribute("authors", bookByIsbn.getAuthors());
         model.addAttribute("publisher", bookByIsbn.getPublisher());
         model.addAttribute("publicationYear", bookByIsbn.getPublicationYear());
@@ -115,6 +124,7 @@ public class BookController {
         model.addAttribute("description", bookByIsbn.getDescription());
         model.addAttribute("class_nm", bookByIsbn.getClass_nm());
         model.addAttribute("class_no", bookByIsbn.getClass_no());
+        model.addAttribute("BooksReviewList",bookByIsbn.getBooksReviewList());
         model.addAttribute("LibraryList", bookByIsbn.getLibraryList());
         return "detail";
     }
