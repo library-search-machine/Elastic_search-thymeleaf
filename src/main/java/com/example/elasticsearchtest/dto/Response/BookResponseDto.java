@@ -1,4 +1,4 @@
-package com.example.elasticsearchtest.response;
+package com.example.elasticsearchtest.dto.Response;
 
 
 
@@ -8,8 +8,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.data.domain.Page;
-
-import java.awt.print.Book;
 
 @Getter
 @NoArgsConstructor

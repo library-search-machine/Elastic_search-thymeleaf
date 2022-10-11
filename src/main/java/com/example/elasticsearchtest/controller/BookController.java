@@ -1,12 +1,11 @@
 package com.example.elasticsearchtest.controller;
 
 
-import com.example.elasticsearchtest.response.BookResponseDto;
-import com.example.elasticsearchtest.response.BookResponseDto2;
-import com.example.elasticsearchtest.response.BookResponseDto3;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import com.example.elasticsearchtest.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,6 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
