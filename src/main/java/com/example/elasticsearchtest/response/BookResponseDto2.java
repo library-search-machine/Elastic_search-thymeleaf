@@ -1,9 +1,11 @@
 package com.example.elasticsearchtest.response;
+import com.example.elasticsearchtest.domain.BooksReview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -20,4 +22,5 @@ public class BookResponseDto2 {
     private String class_nm;
     private String class_no;
     private Set<String> LibraryList;
+    private List<BooksReview> booksReviewList;
 }
