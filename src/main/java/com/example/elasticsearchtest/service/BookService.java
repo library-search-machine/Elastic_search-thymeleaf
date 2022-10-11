@@ -1,10 +1,12 @@
 package com.example.elasticsearchtest.service;
 
 
+import com.example.elasticsearchtest.domain.BooksReview;
 import com.example.elasticsearchtest.domain.LibraryEs;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
 import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
 import com.example.elasticsearchtest.repository.LibraryEsRepository;
+import com.example.elasticsearchtest.repository.MongodbRepository;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
 import com.example.elasticsearchtest.response.BookResponseDto3;
@@ -40,6 +42,7 @@ public class BookService {
 
     private final LibraryEsQueryRepository libraryEsQueryRepository;
     private final LibraryEsRepository libraryEsRepository;
+    private final MongodbRepository mongodbRepository;
 
     @Transactional
     public Page<BookResponseDto> getBook(String keyword, String type, int page) {
@@ -143,6 +146,7 @@ public class BookService {
                     .bookImageURL((String) book.get("bookImageURL"))
                     .class_no((String) book.get("class_no"))
                     .description(description)
+                    .booksReviewList(mongodbRepository.findByIsbn13(isbn)) //여기에서 가져오는 겁니다..
                     .LibraryList(LibraryList2)
                     .build();
             return bookResponseDto;
