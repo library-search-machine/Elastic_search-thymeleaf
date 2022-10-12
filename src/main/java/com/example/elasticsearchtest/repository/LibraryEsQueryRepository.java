@@ -39,6 +39,7 @@ public class LibraryEsQueryRepository {
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));//token값들을 가져오고 그 토큰들의 순서대로 검색해서 나온 검색값 return
 
+
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
@@ -149,22 +150,22 @@ public class LibraryEsQueryRepository {
         }
         return list;
     }
-//    public List<LibraryEs> autocomplete_writer(String keyword) {
-//        Pageable pageable = PageRequest.of(0, 30);
-//        PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("authors", keyword);
-//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-//                .should(prefixQueryBuilder);
-//        NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
-//                .withQuery(boolQueryBuilder)
-//                .withPageable(pageable)
-//                .build();
-//        SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
-//        String json = nativeSearchQuery.getQuery().toString();
-//        List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
-//        List<LibraryEs> list = new ArrayList<>();
-//        for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
-//            list.add(libraryEsSearchHit.getContent());
-//        }
-//        return list;
-//    }
+    public List<LibraryEs> findByIsbn13One(List<String> Isbn13List) {
+        List<LibraryEs> list = new ArrayList<>();
+        for (String isbn : Isbn13List) {
+            MatchQueryBuilder matchQueryBuilder = new MatchQueryBuilder("isbn13",isbn);
+            Pageable pageable = PageRequest.of(0, 1);//하나만 저장을 해서 page = 1
+            NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
+                    .withQuery(matchQueryBuilder)
+                    .withPageable(pageable)
+                    .build();
+            SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
+            List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
+
+            for (SearchHit<LibraryEs> libraryEsSearchHit : searchHitList) {
+                list.add(libraryEsSearchHit.getContent());
+            }
+        }
+        return list;
+    }
 }
