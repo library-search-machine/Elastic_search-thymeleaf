@@ -89,17 +89,6 @@ public class BookService {
         return bookNames;
     }
 
-//    @Transactional
-//    public List<String> autocomplete_writer(String keyword) {
-//        List<LibraryEs> list = libraryEsQueryRepository.autocomplete_writer(keyword);
-//        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
-//        List<String> bookNames = new ArrayList<>();
-//        for (LibraryEs libraryEs : list) {
-//            bookNames.add(libraryEs.getAuthors()+" '책 제목: "+libraryEs.getBookName()+"'");
-//        }
-//        return bookNames;
-//    }
-
     @Transactional
     public BookResponseDto2 getBookByIsbn(String isbn) {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
