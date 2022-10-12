@@ -1,0 +1,235 @@
+<html xmlns:th="http://www.thymeleaf.org" id="load">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <title>메인페이지</title>
+    <link rel="stylesheet"
+          href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.js"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            font-family: 'Jua', sans-serif;
+        }
+
+        .card-header {
+            text-align: center;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal .bg {
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+
+        #modalBox {
+            position: absolute;
+            background-color: #fff;
+            width: 400px;
+            height: 320px;
+            padding: 15px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+
+    <script>
+
+        function get_detail_page(obj) {
+            let td = $(obj).children();
+            let isbn = td.eq(3).text();
+            isbn = isbn.slice(-13)
+            console.log(isbn);
+            location.href = "/search_isbn?isbn=" + isbn;
+        }
+
+
+        function delete_comment(id) {
+            $.ajax({
+                type: "DELETE",
+                url: "/delete_comment",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    delete_id: id
+                }),
+                success: function (success) {//성공을 했으면 현재 페이지에 새로고침을 하면 되는 거겠징
+                    alert("코멘트 삭제 완료😀")
+                    setTimeout(function () {
+                        location.reload();
+                    }, 100); //0.1초 후 새로고침
+                }
+            })
+        }
+
+        function modify_comment(id) {
+            let title = $("#modal_title").val();
+            let comment = $("#modal_comment").val();
+            let stars = $("#modal_heart").val();
+            $.ajax({
+                type: "POST",
+                url: "/modify_comment",
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    title: title,
+                    comment: comment,
+                    stars: stars,
+                    modify_id: id
+                }),
+                success: function (success) {//성공을 했으면 현재 페이지에 새로고침을 하면 되는 거겠징
+                    alert("코멘트 수정 완료😀")
+                    setTimeout(function () {
+                        location.reload();
+                    }, 100); //0.1초 후 새로고침
+                }
+            })
+        }
+    </script>
+</head>
+
+<body>
+
+<section class="hero is-info">
+    <div class="hero-body">
+        <a href="http://localhost:8080" class="title" onclick="reload()">
+            도서관 데이터 검색
+        </a>
+    </div>
+    <div>
+        <a href="javascript:history.back(-1)" style="float:left;font-size: 15px;margin-left: 30px">
+            ◀뒤로가기
+        </a>
+    </div>
+</section>
+<section class="section" style="height: 1000px">
+    <p class="control" style="font-size: 25px">최근에 조회한 책들📕</p>
+    <br>
+    <div class="card mb-3" style="width:800px;height: 600px; overflow:auto;text-align: center;float: left">
+        <table class="table is-hoverable" style="text-align:center;">
+            <thead>
+            <tr>
+                <th style="text-align: center">제목</th>
+                <th style="text-align: center">출판사</th>
+                <th style="text-align: center">저자</th>
+                <th style="text-align: center">ISBN</th>
+            </tr>
+
+            </thead>
+            <tbody>
+            <tr th:each="book, status: ${bookList}" onclick="get_detail_page(this)">
+                <td th:text="${book.getBookName()}"></td>
+                <td th:text="${book.getAuthors()}"></td>
+                <td th:text="${book.getPublisher()}"></td>
+                <td th:text="${book.getIsbn13()}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="card mb-3" style="width:800px;height: 600px; overflow:auto; margin-left: 100px; float: left ">
+        <div class="card-header" style="font-size: 17px">
+            <p style="color: black; text-align: center;font-size: 17px">내가 남긴 코멘트들💬</p>
+        </div>
+        <div class="card" th:each="booksreviewlist:${commentList}">
+            <div class="card-body">
+                <p class="card-text" style="color: darkgray;font-size: 18px"
+                   th:text="${booksreviewlist.getTitle()}"></p>
+                <p class="card-text" style="font-size: 15px" th:text="' - '+${booksreviewlist.getComment()}"></p>
+                <br>
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==5" style="font-size: 15px;width: 200px">별점:
+                    ⭐⭐⭐⭐⭐</p>
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==4" style="font-size: 15px;width: 200px">별점:
+                    ⭐⭐⭐⭐</p>
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==3" style="font-size: 15px;width: 200px">별점:
+                    ⭐⭐⭐</p>
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==2" style="font-size: 15px;width: 200px">별점:
+                    ⭐⭐</p>
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==1" style="font-size: 15px;width: 200px">별점:
+                    ⭐</p>
+                <p class="card-text" style="color: darkgray;font-size: 13px;width: 200px"
+                   th:text="'책제목: '+${booksreviewlist.getBookName()}"></p>
+                <button type="button" class="btn btn-danger" style="float: right"
+                        th:data-name="${booksreviewlist.getId()}"
+                        th:onclick="delete_comment(this.getAttribute('data-name'))">삭제
+                </button>
+                <div class="openBtn" style="float:right; margin-right:20px;">
+                    <button class="btn btn-primary">수정</button>
+                </div>
+            </div>
+            <div class="modal hidden">
+                <div class="bg"></div>
+                <div class="Box" id="modalBox" style="width: 500px">
+                    <div class="field">
+                        <label class="label" style="margin: 0">제목</label>
+                        <input class="input" type="text" id="modal_title" placeholder="제목을 입력해주세요">
+                    </div>
+                    <div class="field">
+                        <label class="label" style="margin: 0">코멘트</label>
+                        <input class="input" type="text" id="modal_comment" placeholder="코멘트를 입력해주세요">
+                    </div>
+                    <div class="field">
+                        <label class="label" style="margin: 0">별점</label>
+                        <select id="modal_heart" class="form-select form-select-sm"
+                                aria-label=".form-select-sm example">
+                            <option value="1">⭐</option>
+                            <option value="2">⭐⭐</option>
+                            <option value="3">⭐⭐⭐</option>
+                            <option value="4">⭐⭐⭐⭐</option>
+                            <option value="5">⭐⭐⭐⭐⭐</option>
+                        </select>
+                    </div>
+                    <br>
+                    <div class="closeBtn">
+                        <button class="button is-info">취소</button>
+                        <button class="button is-info" th:data-name="${booksreviewlist.getId()}"
+                                th:onclick="modify_comment(this.getAttribute('data-name'))">수정
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.onload = function(){
+            const open  = () => {
+                document.querySelector(".modal").classList.remove("hidden");
+            }
+            const close = () => {
+                document.querySelector(".modal").classList.add("hidden");
+            }
+            document.querySelector(".openBtn").addEventListener("click", open);
+            document.querySelector(".closeBtn").addEventListener("click", close);
+            document.querySelector(".bg").addEventListener("click", close);
+        }
+    </script>
+</section>
+</body>
+
+</html>
