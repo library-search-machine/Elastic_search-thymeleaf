@@ -153,6 +153,14 @@
             도서관 데이터 검색
         </a>
     </div>
+    <div>
+        <a href="javascript:history.back(-1)" style="float:left;font-size: 15px;margin-left: 30px">
+            ◀뒤로가기
+        </a>
+        <a href="http://localhost:8080/my-page" style="float: right;font-size: 15px;margin-right: 30px">
+            마이페이지🏠
+        </a>
+    </div>
 </section>
 <section class="section">
     <div class="field has-addons">
@@ -259,12 +267,12 @@
         <table class="table is-hoverable" style="text-align:center;">
             <thead>
             <tr>
-                <th>번호        </th>
-                <th>제목</th>
-                <th>출판사</th>
-                <th>저자</th>
-                <th>ISBN</th>
-                <th>Vol.</th>
+                <th style="text-align: center">번호</th>
+                <th style="text-align: center">제목</th>
+                <th style="text-align: center">출판사</th>
+                <th style="text-align: center">저자</th>
+                <th style="text-align: center">ISBN</th>
+                <th style="text-align: center">Vol.</th>
             </tr>
             </thead>
             <tbody th:if="${totalItems == 0}">
