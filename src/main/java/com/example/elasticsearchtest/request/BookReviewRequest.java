@@ -15,5 +15,7 @@ public class BookReviewRequest {
     private String comment;//글 댓글
     private int stars;//별점
     private String isbn13;//그 저장된 isbn을 지정
+    private String nickname;//작성자를 알아야함..ㅠㅠ
+    private String bookName;
 
 }
