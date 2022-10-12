@@ -29,12 +29,22 @@ public class BookController {
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
         if(cookies!=null) {
             StringBuilder sb = new StringBuilder();//지금 저장된 토큰을 통해 최근 조회한 isbn을
-            for (int i = 0; i < cookies.length; i++) {
-                if (i == cookies.length - 1)
-                    sb.append(cookies[i].getValue());
-                else {
-                    sb.append(cookies[i].getValue());
-                    sb.append(";");
+            if(cookies.length==1){//현재 조회한 책이 한개일 경우는 그것만 해서 추천 리스트를 보냄
+                sb.append(cookies[0].getValue());
+            }
+            else if(cookies.length==2) {//두개 일대도 그렇게 하는거임.
+                sb.append(cookies[0].getValue());
+                sb.append(";");
+                sb.append(cookies[1].getValue());
+            }
+            else{//상위 3개의 데이터만 append함!!
+                for (int i = cookies.length-1; i >=cookies.length-3; i--) {
+                    if (i == cookies.length - 1)
+                        sb.append(cookies[i].getValue());
+                    else {
+                        sb.append(cookies[i].getValue());
+                        sb.append(";");
+                    }
                 }
             }
             List<BookResponseDto3> booksList = bookService.recommend_Book(sb.toString());
@@ -90,15 +100,8 @@ public class BookController {
     @GetMapping("/search_isbn")
     public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
-        if(cookies!=null){
-            if (cookies.length == 3) {
-                Cookie deleteCookie = cookies[0];//가장 처음 저장된 쿠키를 삭제
-                deleteCookie.setMaxAge(0);
-                response.addCookie( deleteCookie);
-            }
-        }
         Cookie cookie = new Cookie(isbn, isbn);
-        cookie.setMaxAge(600);
+        cookie.setMaxAge(3600);//최근 쿠키를 저장을 함...최근 쿠키를 한시간 정도 저장을 함..
         response.addCookie(cookie);//새로운 쿠키를 저장
         double score =0;
         String total;
