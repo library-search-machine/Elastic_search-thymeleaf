@@ -35,7 +35,7 @@ public class TokenProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final long ACCESS_TOKEN_EXPIRE_TIME = 1000 * 60 * 30;         //30분
-    private static final long REFRESH_TOKEN_EXPRIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
+    private static final long REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;     //7일
 
     private final Key key;
 
@@ -62,15 +62,12 @@ public class TokenProvider {
         String refreshToken = Jwts.builder()
                 .setSubject(member.getNickName())
                 .claim(AUTHORITIES_KEY, Authority.ROLE_MEMBER.toString())
-                .setExpiration(new Date(now + REFRESH_TOKEN_EXPRIRE_TIME))
+                .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
 
-        RefreshToken refreshTokenObject = RefreshToken.builder()
-                .id(member.getId())
-                .member(member)
-                .valueKey(refreshToken)
-                .build();
+        RefreshToken refreshTokenObject = new RefreshToken(member,refreshToken);
+
 
         refreshTokenRepository.save(refreshTokenObject);
 
@@ -112,7 +109,7 @@ public class TokenProvider {
 
     @Transactional(readOnly = true)
     public RefreshToken isPresentRefreshToken(Member member) {
-        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findByMember(member);
+        Optional<RefreshToken> optionalRefreshToken = refreshTokenRepository.findById(member.getId());
         return optionalRefreshToken.orElse(null);
     }
 

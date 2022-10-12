@@ -45,8 +45,14 @@
                     dataType: "json",
 
 
-                    success: function (data) {
-                        //쿠키올리는 코드 필요함
+                    success: function (data,status,request) {
+                        //로컬스토리지에 데이터 추가
+
+                        console.log(request.getResponseHeader('Authorization'))
+                        console.log(request.getResponseHeader('RefreshToken'))
+                        localStorage.setItem("Authorization", request.getResponseHeader('Authorization'));
+                        localStorage.setItem("RefreshToken", request.getResponseHeader('RefreshToken'));
+
 
                     },error: function (request, status, error){
                         console.log(request)

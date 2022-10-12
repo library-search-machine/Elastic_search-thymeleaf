@@ -1,26 +1,26 @@
 package com.example.elasticsearchtest.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisHash;
 
 import javax.persistence.*;
 
-@Builder
+
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
+@NoArgsConstructor
+@RedisHash(value = "member", timeToLive = 3600)
 public class RefreshToken {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
+    private String nickname;
+    private String token;
 
-    @JoinColumn(name = "member_id", nullable = false)
-    @OneToOne(fetch = FetchType.LAZY)
-    private Member member;
+    public RefreshToken(Member member, String refreshToken) {
+        id = member.getId();
+        nickname = member.getNickName();
+        token = refreshToken;
 
-    @Column(nullable = false)
-    private String valueKey;
+    }
 }
