@@ -3,10 +3,10 @@ package com.example.elasticsearchtest.controller;
 
 
 
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
-import com.example.elasticsearchtest.response.BookResponseDto;
-import com.example.elasticsearchtest.response.BookResponseDto2;
-import com.example.elasticsearchtest.response.BookResponseDto3;
 import com.example.elasticsearchtest.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
