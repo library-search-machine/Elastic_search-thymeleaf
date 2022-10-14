@@ -138,7 +138,6 @@ public class TokenProvider {
             throw new BusinessException("TOKEN_NOT_FOUND", JWT_NOT_PERMIT);
 
         }
-
         refreshTokenRepository.delete(refreshToken);
         return new ResponseEntity<>("success", HttpStatus.OK);
 
