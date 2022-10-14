@@ -2,12 +2,12 @@ package com.example.elasticsearchtest.controller;
 
 
 import com.example.elasticsearchtest.domain.BooksReview;
+import com.example.elasticsearchtest.dto.Response.ResponseDto;
 import com.example.elasticsearchtest.repository.MongodbRepository;
 import com.example.elasticsearchtest.request.BookReviewRequest;
 
 import com.example.elasticsearchtest.request.DeleteCommentDtoRequest;
 import com.example.elasticsearchtest.request.ModifyCommentDtoRequest;
-import com.example.elasticsearchtest.response.ResponseDto;
 import com.example.elasticsearchtest.service.MongoDBService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

@@ -10,9 +10,6 @@ import com.example.elasticsearchtest.dto.Response.BookResponseDto;
 import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
 import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import com.example.elasticsearchtest.repository.MongodbRepository;
-import com.example.elasticsearchtest.response.BookResponseDto;
-import com.example.elasticsearchtest.response.BookResponseDto2;
-import com.example.elasticsearchtest.response.BookResponseDto3;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -73,7 +70,6 @@ public class BookService {
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
                 break;
         }
-        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), bookList.size());
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
@@ -85,7 +81,6 @@ public class BookService {
 
         bookList = libraryEsQueryRepository.findByAll(requestDto);
 
-        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), bookList.size());
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
@@ -199,6 +194,7 @@ public class BookService {
                         .publicationYear((String) book.get("publication_year"))
                         .bookImageURL((String) book.get("bookImageURL"))
                         .class_no((String) book.get("class_no"))
+                        .isbn13((String) book.get("isbn13"))
                         .build();
                list.add(bookResponseDto);
             }

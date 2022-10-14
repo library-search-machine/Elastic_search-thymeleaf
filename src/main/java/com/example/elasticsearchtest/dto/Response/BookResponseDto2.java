@@ -1,6 +1,6 @@
-package com.example.elasticsearchtest.response;
-import com.example.elasticsearchtest.domain.BooksReview;
 package com.example.elasticsearchtest.dto.Response;
+
+import com.example.elasticsearchtest.domain.BooksReview;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
