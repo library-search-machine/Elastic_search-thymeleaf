@@ -12,7 +12,9 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -26,6 +28,8 @@ import java.util.Date;
 import java.util.Optional;
 
 import static com.example.elasticsearchtest.Errorhandler.ErrorCode.JWT_NOT_PERMIT;
+import static com.example.elasticsearchtest.Errorhandler.ErrorCode.LOGIN_INPUT_INVALID;
+
 import com.example.elasticsearchtest.domain.Member;
 
 
@@ -68,8 +72,8 @@ public class TokenProvider {
 
         RefreshToken refreshTokenObject = new RefreshToken(member,refreshToken);
 
+        saveRepo(refreshTokenObject);
 
-        refreshTokenRepository.save(refreshTokenObject);
 
 
         return TokenDto.builder()
@@ -80,6 +84,20 @@ public class TokenProvider {
                 .build();
 
     }
+    @Cacheable(value="member",key="#refreshTokenObject.token",cacheManager = "cacheManager1")
+    public void saveRepo(RefreshToken refreshTokenObject){
+        refreshTokenRepository.save(refreshTokenObject);
+
+    }
+    @Cacheable(value="member",key="#refreshTokenObject.token",cacheManager = "cacheManager1")
+    public RefreshToken getRepo(RefreshToken refreshTokenObject){
+        Optional<RefreshToken> refreshToken =refreshTokenRepository.findByToken(refreshTokenObject);
+        return refreshToken.orElseThrow(
+                () -> new BusinessException("토큰이 유효하지않음.", LOGIN_INPUT_INVALID));
+
+
+    }
+
 
     public Member getMemberFromAuthentication() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

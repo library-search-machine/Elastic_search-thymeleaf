@@ -7,6 +7,7 @@ import com.example.elasticsearchtest.dto.TokenDto;
 import com.example.elasticsearchtest.jwt.TokenProvider;
 import com.example.elasticsearchtest.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class RegisterService {
 
 
     public ResponseEntity<MemberResponseDto> login(LoginRequestDto requestDto, HttpServletResponse response) {
+
         Member member = isPresentMember(requestDto.getId(), false);
         member.validatePassword(passwordEncoder, requestDto.getPassword());
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
