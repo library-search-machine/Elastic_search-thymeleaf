@@ -1,6 +1,12 @@
 package com.example.elasticsearchtest.controller;
 
 
+
+
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
+import com.example.elasticsearchtest.dto.libraryRequestDto;
 import com.example.elasticsearchtest.domain.BooksReview;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
@@ -10,12 +16,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.MalformedURLException;
 
 import java.util.List;
 
@@ -94,6 +100,76 @@ public class BookController {
         model.addAttribute("bookList", bookList);
         model.addAttribute("keyword", keyword);
 
+        model.addAttribute("page_url","search");
+        return "main";
+    }
+
+
+    @GetMapping("/fullsearch")
+    public String getBook(@RequestParam() String bookname,@RequestParam() String authors, @RequestParam() String publisher,
+                          @RequestParam() String firstPublication,@RequestParam() String endPublication, @RequestParam() String genre,
+                          @RequestParam() String library, int page,Model model){
+
+        //서비스에 전달용
+        libraryRequestDto requestDto = libraryRequestDto.builder()
+                .bookName(!bookname.equals("@") ? bookname : null)
+                .authors(!authors.equals("@") ? authors : null)
+                .publisher(!publisher.equals("@") ? publisher : null)
+                .firstPublication(firstPublication)
+                .endPublication(endPublication)
+                .genre(genre)
+                .library(!library.equals("@") ? library : null)
+                .build();
+
+        //view에 전달용
+        libraryRequestDto requestDto2 = libraryRequestDto.builder()
+                .bookName(bookname)
+                .authors(authors)
+                .publisher(publisher)
+                .firstPublication(firstPublication)
+                .endPublication(endPublication)
+                .genre(genre)
+                .library(library)
+                .build();
+
+        Page<BookResponseDto> bookList =  bookService.getBook(requestDto, page);
+
+        int startIndex;
+        int endIndex;
+        long startCount = (page - 1) * 30 + 1;
+        long endCount = startCount + 30 - 1;
+
+        if (page / 10 < 1) {
+            startIndex=1;
+            endIndex=10;
+            if(endIndex>=bookList.getTotalPages())
+                endIndex= bookList.getTotalPages();
+        } else  {
+            if(page%10==0){
+                page-=1;
+            }
+            System.out.println("page = " + page);
+            startIndex=page/10*10+1;
+            endIndex=startIndex+9;
+            if(endIndex>=bookList.getTotalPages())
+                endIndex= bookList.getTotalPages();
+        }
+
+        if(endCount>bookList.getTotalElements())
+            model.addAttribute("endCount", bookList.getTotalElements());
+        else
+            model.addAttribute("endCount", endCount);
+
+        model.addAttribute("totalPages", bookList.getTotalPages());
+        model.addAttribute("totalItems", bookList.getTotalElements());
+        model.addAttribute("current_page", page);
+        model.addAttribute("startCount", startCount);
+        model.addAttribute("startIndex", startIndex);
+        model.addAttribute("endIndex", endIndex);
+        model.addAttribute("bookList", bookList);
+
+        model.addAttribute("page_url","fullsearch");
+        model.addAttribute("request",requestDto2);
         return "main";
     }
 

@@ -123,21 +123,36 @@
 
         //상세검색
         function advanced_search() {
-            let find_name = "advanced"
             let title = $("#modal_book_name").val() ? $("#modal_book_name").val() : "@"// 책 이름
             if (title.charAt(title.length - 1) == '의')
                 title += ' ';
             let authors = $("#modal_book_authors").val() ? $("#modal_book_authors").val() : "@"// 저자
-            let search_publisher = $("#modal_book_publisher").val() ? $("#modal_book_publisher").val() : "@"// 출판사
-            let search_name = title + "-" + authors + "-" + search_publisher
-            if (search_name != '') {
-                location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
-            }
+            let publisher = $("#modal_book_publisher").val() ? $("#modal_book_publisher").val() : "@"// 출판사
+            let firstPublication = $('#firstPublication option:selected').val();// 시작년도
+            let endPublication = $('#endPublication option:selected').val();// 시작년도
+            let genre = $('input[name="genre"]:checked').val();
+            let library = $("#modal_library").val() ? $("#modal_library").val() : "@"// 도서관
+
+            location.href = "/fullsearch?bookname=" + title + "&authors="+authors + "&publisher="+publisher +
+                "&firstPublication="+firstPublication + "&endPublication="+endPublication +
+                "&genre="+genre +"&library="+library +
+                "&page=" + 1;
         }
 
         function get_detail_page(obj) {
             let td = $(obj).children();
             let isbn = td.eq(4).text();
+            location.href = "/search_isbn?isbn=" + isbn;
+        }
+
+        function get_detail_page(obj) {
+            let td = $(obj).children();
+            let isbn = td.eq(4).text();
+            location.href = "/search_isbn?isbn=" + isbn;
+        }
+        function get_detail_page_recommendBook(obj) {
+            let td = $(obj).children(".row").children(".col-md-8").children(".card-body").children(".isbn13");
+            let isbn = td.eq(0).text();
             location.href = "/search_isbn?isbn=" + isbn;
         }
 
@@ -163,6 +178,7 @@
     </div>
 </section>
 <section class="section">
+
     <div class="field has-addons">
         <p class="control">
         <span class="select">
@@ -185,29 +201,155 @@
         </div>
     </div>
 </section>
+
 <!--  상세 검색 모달 -->
 <div class="modal hidden">
-    <div class="bg"></div>
-    <div class="Box" id="modalBox" style="width: 500px">
-        <div class="field">
-            <label class="label" style="margin: 0">제목</label>
-            <input class="input" type="text" id="modal_book_name" placeholder="제목을 입력해주세요">
-        </div>
-        <div class="field">
-            <label class="label" style="margin: 0">저자</label>
-            <input class="input" type="text" id="modal_book_authors" placeholder="저자를 입력해주세요">
-        </div>
-        <div class="field">
-            <label class="label" style="margin: 0">출판사</label>
-            <input class="input" type="text" id="modal_book_publisher" placeholder="출판사를 입력해주세요">
-        </div>
-        <br>
-        <div class="closeBtn">
-            <button class="button is-info">취소</button>
-            <button class="button is-info" onclick="advanced_search()">검색</button>
-        </div>
+    <div class="modal-background"></div>
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title">상세 검색</p>
+            <div class="closeBtn">
+                <button class="delete" aria-label="close"></button>
+            </div>
+        </header>
+        <section class="modal-card-body">
+            <div class="field">
+                <label class="label" style="margin: 0">제목</label>
+                <input class="input" type="text" id="modal_book_name" placeholder="제목을 입력해주세요">
+            </div>
+            <div class="field">
+                <label class="label" style="margin: 0">저자</label>
+                <input class="input" type="text" id="modal_book_authors" placeholder="저자를 입력해주세요">
+            </div>
+            <div class="field">
+                <label class="label" style="margin: 0">출판사</label>
+                <input class="input" type="text" id="modal_book_publisher" placeholder="출판사를 입력해주세요">
+            </div>
+            <div class="field">
+                <label class="label">출판년도</label>
+                <div class="control" style="display: inline">
+                    <div class="select" id="firstPublication">
+                        <select>
+                            <option value="2000">2000</option>
+                            <option value="2001">2001</option>
+                            <option value="2002">2002</option>
+                            <option value="2003">2003</option>
+                            <option value="2004">2004</option>
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                            <option value="2009">2009</option>
+                            <option value="2010">2010</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                </div>
+                <span style="vertical-align: bottom; font-size:20px">년부터 &nbsp&nbsp&nbsp&nbsp</span>
+                <div class="control"style="display: inline">
+                    <div class="select" id="endPublication">
+                        <select>
+                            <option value="2000">2000</option>
+                            <option value="2001">2001</option>
+                            <option value="2002">2002</option>
+                            <option value="2003">2003</option>
+                            <option value="2004">2004</option>
+                            <option value="2005">2005</option>
+                            <option value="2006">2006</option>
+                            <option value="2007">2007</option>
+                            <option value="2008">2008</option>
+                            <option value="2009">2009</option>
+                            <option value="2010">2010</option>
+                            <option value="2011">2011</option>
+                            <option value="2012">2012</option>
+                            <option value="2013">2013</option>
+                            <option value="2014">2014</option>
+                            <option value="2015">2015</option>
+                            <option value="2016">2016</option>
+                            <option value="2017">2017</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                        </select>
+                    </div>
+                </div>
+                <span style="vertical-align: bottom; font-size:20px">년까지</span>
+            </div>
+            <div class="field">
+                <label class="label" style="margin: 0">장르</label>
+                <div class="control">
+                    <label class="radio">
+                        <input type="radio" name="genre" checked value="전체">
+                        <span class="tag is-medium is-link is-light" >전체</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="000">
+                        <span class="tag is-medium is-link is-light">총류</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="100">
+                        <span class="tag is-medium is-link is-light">철학</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="200">
+                        <span class="tag is-medium is-link is-light">종교</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="300">
+                        <span class="tag is-medium is-link is-light">사회과학</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="400">
+                        <span class="tag is-medium is-link is-light">자연과학</span>
+                    </label>
+                    <br>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="500">
+                        <span class="tag is-medium is-link is-light">기술과학</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="600">
+                        <span class="tag is-medium is-link is-light">예술</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="700">
+                        <span class="tag is-medium is-link is-light">언어</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="800">
+                        <span class="tag is-medium is-link is-light">문학</span>
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="genre" value="900">
+                        <span class="tag is-medium is-link is-light">역사</span>
+                    </label>
+                </div>
+                <div class="field">
+                    <label class="label" style="margin: 0">도서관</label>
+                    <input class="input" type="text" id="modal_library" placeholder="도서관을 입력해주세요">
+                </div>
+            </div>
+        </section>
+        <footer class="modal-card-foot">
+            <button class="button is-info is-large"  style="display: block; margin : auto" onclick="advanced_search()">검색</button>
+        </footer>
     </div>
 </div>
+
+<!--  모달을 끄고 키는 코드-->
 <script>
     const open = () => {
         document.querySelector(".modal").classList.remove("hidden");
@@ -217,8 +359,8 @@
     }
     document.querySelector(".openBtn").addEventListener("click", open);
     document.querySelector(".closeBtn").addEventListener("click", close);
-    document.querySelector(".bg").addEventListener("click", close);
 </script>
+
 <!--  게시글 카드가 들어가는 공간 -->
 <section class="section" th:if="${totalItems == 0}" style="text-align:center;">
     <div class="container">
@@ -233,7 +375,7 @@
 <div class="cards" th:if="${not #lists.isEmpty(list)}">
     <p style="font-size: 30px; margin-left:30px ">추천도서 TOP 10😄</p>
     <br>
-    <div class="card mb-3"  style="max-width: 350px; position: center; margin-left: 30px; float: left; height: 300px" th:each="recommendbooks:${list} ">
+    <div class="card mb-3"  style="max-width: 350px; position: center; margin-left: 30px; float: left; height: 300px" th:each="recommendbooks:${list} " onclick="get_detail_page_recommendBook(this)">
         <div class="row g-0" >
             <div class="col-md-4" style="position: relative">
                 <br>
@@ -253,6 +395,8 @@
                     <p class="card-text" th:text="'출판년도: '+${recommendbooks.publicationYear}"></p>
                     <p class="card-text" th:text="'분류: '+${recommendbooks.class_nm}"></p>
                     <p class="card-text" th:text="'분류번호: '+${recommendbooks.class_no}"></p>
+                    <p hidden class="isbn13" th:text="${recommendbooks.isbn13}"></p>
+
 
 
                 </div>
@@ -293,6 +437,7 @@
         </table>
     </div>
 </section>
+
 <div class="text-center m-1" th:if="${totalItems > 0}">
     <nav aria-label="Page navigation example ">
         <ul>
@@ -304,31 +449,73 @@
                 </a>
             </li>
             <li class="page-item" style="display: inline-block" th:if="${current_page -10 > 0}">
-                <a class="page-link"
+                <a class="page-link" th:if="${page_url == 'search'}"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${startIndex}-1)}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">이전</span>
+                </a>
+                <a class="page-link" th:if="${page_url == 'fullsearch'}"
+                   th:href="@{${#httpServletRequest.requestURI}(bookname=${request.bookName},authors=${request.authors},
+                   publisher=${request.publisher},
+                firstPublication=${request.firstPublication},
+                endPublication=${request.endPublication}, genre=${request.genre}, library=${request.library},
+                 page=${startIndex}-1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">이전</span>
                 </a>
             </li>
             <th:block th:with="start = ${startIndex}, end = ${endIndex}">
-                <li class="page-item" style="display: inline-block"
-                    th:with="start = ${startIndex}, end = ${endIndex}"
-                    th:each="pageButton : ${#numbers.sequence(start, end)}">
-                    <a class="page-link"
-                       th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}"
-                       th:text=${pageButton}></a>
-                </li>
+                <div th:if="${page_url == 'search'}" style="display: inline">
+                    <li class="page-item" style="display: inline-block"
+                        th:with="start = ${startIndex}, end = ${endIndex}"
+                        th:each="pageButton : ${#numbers.sequence(start, end)}">
+                        <a class="page-link"
+                           th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${pageButton})}"
+                           th:text="${pageButton}"></a>
+                    </li>
+                </div>
+                <div th:if="${page_url == 'fullsearch'}" style="display: inline">
+                    <li class="page-item" style="display: inline-block"
+                        th:with="start = ${startIndex}, end = ${endIndex}"
+                        th:each="pageButton : ${#numbers.sequence(start, end)}">
+                        <a class="page-link"
+                           th:href="@{${#httpServletRequest.requestURI}(bookname=${request.bookName},authors=${request.authors},
+                   publisher=${request.publisher},
+                firstPublication=${request.firstPublication},
+                endPublication=${request.endPublication}, genre=${request.genre}, library=${request.library},
+                 page=${pageButton})}"
+                           th:text="${pageButton}"></a>
+                    </li>
+                </div>
             </th:block>
             <li class="page-item" style="display: inline-block" th:if="${endIndex} < ${totalPages}">
-                <a class="page-link"
+                <a class="page-link" th:if="${page_url == 'search'}"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type},page=${endIndex}+1)}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">다음</span>
+                </a>
+                <a class="page-link" th:if="${page_url == 'fullsearch'}"
+                   th:href="@{${#httpServletRequest.requestURI}(bookname=${request.bookName},authors=${request.authors},
+                   publisher=${request.publisher},
+                firstPublication=${request.firstPublication},
+                endPublication=${request.endPublication}, genre=${request.genre}, library=${request.library},
+                 page=${endIndex}+1)}"
                    aria-label="Previous">
                     <span aria-hidden="true">다음</span>
                 </a>
             </li>
             <li class="page-item" style="display: inline-block">
-                <a class="page-link"
+                <a class="page-link" th:if="${page_url == 'search'}"
                    th:href="@{${#httpServletRequest.requestURI}(keyword=${keyword},type=${type} ,page=${totalPages})}"
+                   aria-label="Previous">
+                    <span aria-hidden="true">끝</span>
+                </a>
+                <a class="page-link" th:if="${page_url == 'fullsearch'}"
+                   th:href="@{${#httpServletRequest.requestURI}(bookname=${request.bookName},authors=${request.authors},
+                   publisher=${request.publisher},
+                firstPublication=${request.firstPublication},
+                endPublication=${request.endPublication}, genre=${request.genre}, library=${request.library},
+                 page=${totalPages})}"
                    aria-label="Previous">
                     <span aria-hidden="true">끝</span>
                 </a>

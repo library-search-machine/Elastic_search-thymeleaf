@@ -33,12 +33,16 @@ public class LibraryEsQueryRepository {
     private final ElasticsearchOperations operations;
 
     public List<LibraryEs> findByBookName(String keyword) {
+        CollapseBuilder collapseBuilder = new CollapseBuilder("isbn13");
         Pageable pageable = PageRequest.of(0, 1000);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));//token값들을 가져오고 그 토큰들의 순서대로 검색해서 나온 검색값 return
 
+        NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
+                .withQuery(boolQueryBuilder)
+                .withCollapseBuilder(collapseBuilder)
 
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder().withQuery(boolQueryBuilder)
                 .withPageable(pageable)
@@ -86,21 +90,37 @@ public class LibraryEsQueryRepository {
 
     public List<LibraryEs> findByAll(libraryRequestDto requestDto) {
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        Pageable pageable = PageRequest.of(0, 1000);
-        if (requestDto.getBookName() != null) {
+        RangeQueryBuilder yearRangeQueryBuilder = QueryBuilders.rangeQuery("publicationYear");
+        RangeQueryBuilder genreRangeQueryBuilder = QueryBuilders.rangeQuery("class_num");
+
+        Pageable pageable = PageRequest.of(0, 10000);
+
+        if (requestDto.getBookName() != null) { //제목 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("bookName", requestDto.getBookName()).operator(Operator.fromString("and")));
             boolQueryBuilder.should(QueryBuilders.matchPhraseQuery("bookName", requestDto.getBookName()));
         }
-        if (requestDto.getAuthors() != null) {
+        if (requestDto.getAuthors() != null) { //저자 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("authors", requestDto.getAuthors()));
         }
-        if (requestDto.getPublisher() != null) {
+        if (requestDto.getPublisher() != null) { //출판사 상세 검색 쿼리 추가
             boolQueryBuilder.must(QueryBuilders.matchQuery("publisher", requestDto.getPublisher()));
         }
+        if (!requestDto.getGenre().equals("전체")) { //장르 상세 검색 쿼리 추가
+            int genreNum = Integer.parseInt(requestDto.getGenre());
+            boolQueryBuilder.filter(genreRangeQueryBuilder.gte(genreNum).lt(genreNum+100));
+        }
+        if (requestDto.getLibrary() != null) { //도서관 상세 검색 쿼리 추가
+            boolQueryBuilder.filter(QueryBuilders.matchPhraseQuery("libraryName", requestDto.getLibrary()));
+        }
+
+        //날짜 상세 검색 쿼리 추가
+        boolQueryBuilder.filter(yearRangeQueryBuilder.gte(requestDto.getFirstPublication()).lt(requestDto.getEndPublication()).format("yyyy"));
+
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .build();
+
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();
@@ -110,9 +130,11 @@ public class LibraryEsQueryRepository {
         return list;
     }
 
-    public List<LibraryEs> autocomplete_book(String keyword) {
-        Pageable pageable = PageRequest.of(0, 15);
+    public List<LibraryEs> recommendKeyword(String keyword) {
+
+        Pageable pageable = PageRequest.of(0, 20);
         PrefixQueryBuilder prefixQueryBuilder = QueryBuilders.prefixQuery("bookName.keyword", keyword);
+
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(prefixQueryBuilder);
         //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
@@ -130,8 +152,9 @@ public class LibraryEsQueryRepository {
         }
         return list;
     }
-    public List<LibraryEs> autocomplete_book2(String keyword) {
-        Pageable pageable = PageRequest.of(0, 7);
+
+    public List<LibraryEs> recommendKeyword2(String keyword) {
+        Pageable pageable = PageRequest.of(0, 10);
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(QueryBuilders.matchPhraseQuery("bookName", keyword));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()

@@ -6,6 +6,9 @@ import com.example.elasticsearchtest.domain.LibraryEs;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
 import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
 import com.example.elasticsearchtest.repository.LibraryEsRepository;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import com.example.elasticsearchtest.repository.MongodbRepository;
 import com.example.elasticsearchtest.response.BookResponseDto;
 import com.example.elasticsearchtest.response.BookResponseDto2;
@@ -76,6 +79,17 @@ public class BookService {
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
     }
 
+    public Page<BookResponseDto> getBook(libraryRequestDto requestDto,  int page) {
+        Pageable pageable = PageRequest.of(page - 1, 30);
+        List<LibraryEs> bookList;
+
+        bookList = libraryEsQueryRepository.findByAll(requestDto);
+
+        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), bookList.size());
+        return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
+    }
 
     @Transactional
     public List<String> autocomplete_book(String keyword) {
