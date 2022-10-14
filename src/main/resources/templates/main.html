@@ -55,6 +55,13 @@
             height: 320px;
             padding: 15px;
         }
+        #log-out{
+            display: none;
+        }
+
+        #login{
+            display: none;
+        }
 
         .hidden {
             display: none;
@@ -69,6 +76,17 @@
         })
         function reload() {
           window.location.reload();
+        }
+        window.onload=function (){
+            document.getElementById("login").style.display="none";
+            document.getElementById("log-out").style.display="none";
+            let token = localStorage.getItem("Authorization");
+            if(token!=null){//지금 access token이 없을경우에는 로그인창을 보여주고 그게 아니면 로그인을 보여주는거임
+                document.getElementById("log-out").style.display="block";
+            }
+            else{
+                document.getElementById("login").style.display="block";
+            }
         }
         $(function () {//현재 select가 다를 때 다른 식으로 url을 호출해야함..!
             $("#search_bar").autocomplete({
@@ -120,7 +138,6 @@
                 location.href = "/search?keyword=" + search_name + "&type=" + find_name + "&page=" + 1;
             }
         }
-
         //상세검색
         function advanced_search() {
             let title = $("#modal_book_name").val() ? $("#modal_book_name").val() : "@"// 책 이름
@@ -172,9 +189,17 @@
         <a href="javascript:history.back(-1)" style="float:left;font-size: 15px;margin-left: 30px">
             ◀뒤로가기
         </a>
+
         <a href="http://localhost:8080/my-page" style="float: right;font-size: 15px;margin-right: 30px">
             마이페이지🏠
         </a>
+        <a id="login" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
+            로그인
+        </a>
+        <a id="log-out" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
+            로그아웃
+        </a>
+
     </div>
 </section>
 <section class="section">

@@ -26,8 +26,6 @@ public class Member implements Serializable {
     @Column(nullable = false)
     private String nickName;
 
-
-
     @Column(nullable = false)
     @JsonIgnore
     private String password;

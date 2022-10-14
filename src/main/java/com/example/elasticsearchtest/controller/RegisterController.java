@@ -20,19 +20,17 @@ import javax.validation.Valid;
 @Controller
 public class RegisterController {
     private final RegisterService registerService;
-    @GetMapping("/register")
+    @PostMapping("/register")
     public ResponseEntity<String> register(@RequestParam("id") String id,@RequestParam("password") String password ) {
         System.out.println(id+" "+password);
         registerService.registerId(id,password);
         return ResponseEntity.ok( "회원가입  성공");
     }
-    @GetMapping("/page/register")
-    public String pageregister(Model model, HttpServletRequest request,HttpServletResponse response) {
-
-
-        return "register";
+    @PostMapping("/register/exists")
+    public ResponseEntity<String> register_exists(@RequestParam("id") String id) {
+        System.out.println(id);
+       return  registerService.register_exists(id);
     }
-
     //로그인
     @PostMapping(value = "/login")
     public ResponseEntity<MemberResponseDto> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
@@ -41,11 +39,8 @@ public class RegisterController {
     }
     @GetMapping("/page/login")
     public String login(Model model, HttpServletRequest request,HttpServletResponse response) {
-
-
         return "login";
     }
-
     //로그아웃
     @GetMapping(value = "/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
