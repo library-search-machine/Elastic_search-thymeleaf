@@ -18,7 +18,8 @@ import static com.example.elasticsearchtest.Errorhandler.ErrorCode.LOGIN_INPUT_I
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Member implements Serializable {
+public class
+Member implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
