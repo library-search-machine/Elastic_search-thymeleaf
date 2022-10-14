@@ -1,6 +1,7 @@
 package com.example.elasticsearchtest.service;
 
 
+import com.example.elasticsearchtest.domain.BooksReview;
 import com.example.elasticsearchtest.domain.LibraryEs;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
 import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
@@ -8,6 +9,7 @@ import com.example.elasticsearchtest.repository.LibraryEsRepository;
 import com.example.elasticsearchtest.dto.Response.BookResponseDto;
 import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
 import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
+import com.example.elasticsearchtest.repository.MongodbRepository;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -40,6 +42,7 @@ public class BookService {
 
     private final LibraryEsQueryRepository libraryEsQueryRepository;
     private final LibraryEsRepository libraryEsRepository;
+    private final MongodbRepository mongodbRepository;
 
     @Transactional
     public Page<BookResponseDto> getBook(String keyword, String type, int page) {
@@ -67,7 +70,6 @@ public class BookService {
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
                 break;
         }
-        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), bookList.size());
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
@@ -79,17 +81,15 @@ public class BookService {
 
         bookList = libraryEsQueryRepository.findByAll(requestDto);
 
-        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
         final int start = (int) pageable.getOffset();
         final int end = Math.min((start + pageable.getPageSize()), bookList.size());
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
     }
 
     @Transactional
-    public List<String> recommendKeyword(String keyword) {
-        List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
-
-        list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
+    public List<String> autocomplete_book(String keyword) {
+        List<LibraryEs> list = libraryEsQueryRepository.autocomplete_book(keyword);
+        list.addAll(libraryEsQueryRepository.autocomplete_book2(keyword));
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
@@ -144,6 +144,7 @@ public class BookService {
                     .bookImageURL((String) book.get("bookImageURL"))
                     .class_no((String) book.get("class_no"))
                     .description(description)
+                    .booksReviewList(mongodbRepository.findByIsbn13(isbn)) //여기에서 가져오는 겁니다..
                     .LibraryList(LibraryList2)
                     .build();
             return bookResponseDto;
@@ -156,7 +157,7 @@ public class BookService {
 
 
     @Transactional
-    public List<BookResponseDto3>testjson(String isbn) {
+    public List<BookResponseDto3>recommend_Book(String isbn) {
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "https://data4library.kr/api/recommandList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&format=json";
         try {
@@ -195,7 +196,6 @@ public class BookService {
                         .class_no((String) book.get("class_no"))
                         .isbn13((String) book.get("isbn13"))
                         .build();
-
                list.add(bookResponseDto);
             }
             return list;

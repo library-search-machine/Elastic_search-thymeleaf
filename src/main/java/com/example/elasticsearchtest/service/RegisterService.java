@@ -37,9 +37,6 @@ public class RegisterService {
         memberRepository.save(member);
     }
 
-
-
-
     public ResponseEntity<MemberResponseDto> login(LoginRequestDto requestDto, HttpServletResponse response) {
 
         Member member = isPresentMember(requestDto.getId(), false);
@@ -65,7 +62,6 @@ public class RegisterService {
         if (!bool) {
             return optionalMember.orElseThrow(
                     () -> new BusinessException("로그인 실패.", LOGIN_INPUT_INVALID)
-
             );
         } else {
             return optionalMember.orElse(null);
@@ -78,6 +74,4 @@ public class RegisterService {
         response.addHeader("RefreshToken", tokenDto.getRefreshToken());
         response.addHeader("Access-Token-Expire-Time", tokenDto.getAccessTokenExpiresIn().toString());
     }
-
-
 }

@@ -18,10 +18,11 @@ import java.util.List;
 public class RecommendKeywordController {
     private final BookService bookService;
 
-    @GetMapping("/recommend")
-    public ResponseEntity<String> test(@RequestParam("q") final String keyword) {
-        List<String> bookNames = bookService.recommendKeyword(keyword);
+    @GetMapping("/autocomplete_book")
+    public ResponseEntity<String> autocomplete_book(@RequestParam("q") final String keyword) {
+        List<String> bookNames = bookService.autocomplete_book(keyword);
         ObjectMapper mapper = new ObjectMapper();
+
         String resp = "";
         try {
             resp = mapper.writeValueAsString(bookNames);
@@ -29,6 +30,18 @@ public class RecommendKeywordController {
         }
         return new ResponseEntity<String>(resp, HttpStatus.OK);
     }
+
+//    @GetMapping("/autocomplete_writer")
+//    public ResponseEntity<String> autocomplete_writer(@RequestParam("q") final String keyword) {
+//        List<String> bookNames = bookService.autocomplete_writer(keyword);
+//        ObjectMapper mapper = new ObjectMapper();
+//        String resp = "";
+//        try {
+//            resp = mapper.writeValueAsString(bookNames);
+//        } catch (JsonProcessingException e) {
+//        }
+//        return new ResponseEntity<String>(resp, HttpStatus.OK);
+//    }
 
 
 
