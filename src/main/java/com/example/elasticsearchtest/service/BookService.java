@@ -84,7 +84,7 @@ public class BookService {
 
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
-            bookNames.add(libraryEs.getBook_name());
+            bookNames.add(libraryEs.getBookName());
         }
 
 
@@ -96,7 +96,7 @@ public class BookService {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
-            LibraryList2.add(libraryEs.getLibrary_name());
+            LibraryList2.add(libraryEs.getLibraryName());
         }
         //도서나루 open api를 통해 도서 상세 정보를 불러오는 부분
         String url_address = "http://data4library.kr/api/srchDtlList?authKey=6bd363e870bb744d2e52c35f15cfef0aa929faba70bc2d66961aae91e101901f&isbn13=" + isbn + "&loaninfoYN=N&format=json";
