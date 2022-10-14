@@ -73,11 +73,23 @@ public class BookService {
         return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
     }
 
+    public Page<BookResponseDto> getBook(libraryRequestDto requestDto,  int page) {
+        Pageable pageable = PageRequest.of(page - 1, 30);
+        List<LibraryEs> bookList;
+
+        bookList = libraryEsQueryRepository.findByAll(requestDto);
+
+        bookList = deduplication((ArrayList<LibraryEs>) bookList, LibraryEs::getIsbn13);
+        final int start = (int) pageable.getOffset();
+        final int end = Math.min((start + pageable.getPageSize()), bookList.size());
+        return BookResponseDto.toDtoList(new PageImpl<>(bookList.subList(start, end), pageable, bookList.size()));
+    }
 
     @Transactional
     public List<String> recommendKeyword(String keyword) {
         List<LibraryEs> list = libraryEsQueryRepository.recommendKeyword(keyword);
-        list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getIsbn13);//isbn13 으로 중복제거
+
+        list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
@@ -87,7 +99,7 @@ public class BookService {
     }
 
     @Transactional
-    public BookResponseDto2 getBookByIsbn(String isbn) throws MalformedURLException {
+    public BookResponseDto2 getBookByIsbn(String isbn) {
         List<LibraryEs> LibraryList = libraryEsRepository.findByIsbn13All(isbn);
         Set<String> LibraryList2 = new HashSet<>(); //중복값을 제거하기 위해 set채용
         for (LibraryEs libraryEs : LibraryList) {
@@ -196,11 +208,8 @@ public class BookService {
     public <T> List<T> deduplication(ArrayList<T> list, Function<? super T, ?> key) {
         return list.stream().filter(deduplication(key)).collect(Collectors.toList());
     }
-
     public <T> Predicate<T> deduplication(Function<? super T, ?> key) {
         Set<Object> set = ConcurrentHashMap.newKeySet();
         return predicate -> set.add(key.apply(predicate));
     }
-
-
 }
