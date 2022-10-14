@@ -1,4 +1,4 @@
-package com.example.elasticsearchtest.response;
+package com.example.elasticsearchtest.dto.Response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +18,5 @@ public class BookResponseDto3 {
     private String bookImageURL;
     private String class_nm;
     private String class_no;
+    private String isbn13;
 }

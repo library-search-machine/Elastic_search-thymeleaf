@@ -5,9 +5,9 @@ import com.example.elasticsearchtest.domain.LibraryEs;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
 import com.example.elasticsearchtest.repository.LibraryEsQueryRepository;
 import com.example.elasticsearchtest.repository.LibraryEsRepository;
-import com.example.elasticsearchtest.response.BookResponseDto;
-import com.example.elasticsearchtest.response.BookResponseDto2;
-import com.example.elasticsearchtest.response.BookResponseDto3;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -52,6 +52,16 @@ public class BookService {
             case "isbn":
                 bookList = libraryEsQueryRepository.findByIsbn13(keyword);
                 break;
+            case "advanced":
+                String[] keywordArray = keyword.split("-");
+                libraryRequestDto requestDto = libraryRequestDto.builder()
+                        .bookName(!keywordArray[0].equals("@") ? keywordArray[0] : null)
+                        .authors(!keywordArray[1].equals("@") ? keywordArray[1] : null)
+                        .publisher(!keywordArray[2].equals("@") ? keywordArray[2] : null)
+                        .build();
+
+                bookList = libraryEsQueryRepository.findByAll(requestDto);
+                break;
             case "title":
             default:
                 bookList = libraryEsQueryRepository.findByBookName(keyword);
@@ -81,13 +91,10 @@ public class BookService {
 
         list.addAll(libraryEsQueryRepository.recommendKeyword2(keyword));
         list = deduplication((ArrayList<LibraryEs>) list, LibraryEs::getBookName);//책제목 으로 중복제거
-
         List<String> bookNames = new ArrayList<>();
         for (LibraryEs libraryEs : list) {
             bookNames.add(libraryEs.getBookName());
         }
-
-
         return bookNames;
     }
 
@@ -186,6 +193,7 @@ public class BookService {
                         .publicationYear((String) book.get("publication_year"))
                         .bookImageURL((String) book.get("bookImageURL"))
                         .class_no((String) book.get("class_no"))
+                        .isbn13((String) book.get("isbn13"))
                         .build();
 
                list.add(bookResponseDto);

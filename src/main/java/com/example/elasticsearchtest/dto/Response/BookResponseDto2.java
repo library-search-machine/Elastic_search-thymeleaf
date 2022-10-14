@@ -1,4 +1,4 @@
-package com.example.elasticsearchtest.response;
+package com.example.elasticsearchtest.dto.Response;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

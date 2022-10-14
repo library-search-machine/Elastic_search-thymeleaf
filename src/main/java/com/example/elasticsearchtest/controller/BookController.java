@@ -3,24 +3,21 @@ package com.example.elasticsearchtest.controller;
 
 
 
+import com.example.elasticsearchtest.dto.Response.BookResponseDto;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto2;
+import com.example.elasticsearchtest.dto.Response.BookResponseDto3;
 import com.example.elasticsearchtest.dto.libraryRequestDto;
-import com.example.elasticsearchtest.response.BookResponseDto;
-import com.example.elasticsearchtest.response.BookResponseDto2;
-import com.example.elasticsearchtest.response.BookResponseDto3;
 import com.example.elasticsearchtest.service.BookService;
 import lombok.RequiredArgsConstructor;
-import org.elasticsearch.common.recycler.Recycler;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -167,9 +164,8 @@ public class BookController {
         return "main";
     }
 
-
     @GetMapping("/search_isbn")
-    public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) {
+    public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) throws MalformedURLException {
 
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
         if(cookies!=null){
