@@ -14,11 +14,16 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
 @EnableElasticsearchRepositories
 @Configuration
 public class ElasticSearchConfig extends AbstractElasticsearchConfiguration {
+    private static final String host = "fb9be65e4bc844a5b1bf20a5f52a1d2a.ap-northeast-2.aws.elastic-cloud.com:443";
+    private static final String username = "elastic";
+    private static final String password = "G2yx7VbzJCyf7fCIezDtStqk";
 
     @Override
     public RestHighLevelClient elasticsearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo("localhost:9200")
+                .connectedTo(host)
+                .usingSsl()
+                .withBasicAuth(username, password)
                 .build();
         return RestClients.create(clientConfiguration).rest();
     }
