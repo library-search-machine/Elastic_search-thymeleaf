@@ -12,6 +12,9 @@ import com.example.elasticsearchtest.service.MongoDBService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,22 +23,26 @@ public class MongoTestController {
     private final MongodbRepository mongodbRepository;
     private final MongoDBService mongoDBService;
     @PostMapping("/comment")
-    public ResponseDto<?> create_comment(@RequestBody BookReviewRequest request) {
+    public ResponseDto<?> create_comment(@RequestBody BookReviewRequest bookReviewRequest, HttpServletRequest request) {
         //여기서는 받고 이제 service 부분에서 가보자..
-        mongoDBService.create_comment(request);
+        //저장전에 Hrequest 확인.
+
+        mongoDBService.create_comment(bookReviewRequest,request);
         return ResponseDto.success("good");
     }
     @DeleteMapping("/delete_comment")
-    public ResponseDto<?> delete_comment(@RequestBody DeleteCommentDtoRequest request) {
+    public ResponseDto<?> delete_comment(@RequestBody DeleteCommentDtoRequest deleteCommentDtoRequest, HttpServletRequest request) {
         //여기서는 받고 이제 service 부분에서 가보자..
-        mongoDBService.delete_comment(request.getDelete_id());
+        //저장전에 request 확인.
+        mongoDBService.delete_comment(deleteCommentDtoRequest.getDelete_id(),request);
         return ResponseDto.success("good");
 
     }
     @PostMapping("/modify_comment")
-    public ResponseDto<?> modify_comment(@RequestBody ModifyCommentDtoRequest request) {
+    public ResponseDto<?> modify_comment(@RequestBody ModifyCommentDtoRequest modifyCommentDtoRequest, HttpServletRequest request) {
         //여기서는 받고 이제 service 부분에서 가보자..
-        mongoDBService.modify_comment(request);
+        //저장전에 request 확인.
+        mongoDBService.modify_comment(modifyCommentDtoRequest,request);
         return ResponseDto.success("good");
     }
     @GetMapping("/get")
@@ -51,7 +58,7 @@ public class MongoTestController {
 
     }
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<String> delete() {
+    public ResponseEntity<String> delete(HttpServletRequest Hrequest) {
         mongodbRepository.deleteAll();
         return ResponseEntity.ok("delete good");
     }

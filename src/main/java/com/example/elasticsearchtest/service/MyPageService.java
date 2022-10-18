@@ -22,6 +22,7 @@ public class MyPageService {
     private final LibraryEsQueryRepository libraryEsQueryRepository;
     @Transactional
     public List<MyPageResponseDto> test(List<String> isbn) {
+
         List<LibraryEs> byIsbn13One = libraryEsQueryRepository.findByIsbn13One(isbn);//하나씩 저장을 해주는 거임 isbneofh
         List<MyPageResponseDto> booklist =new ArrayList<>();
         for (LibraryEs libraryEs : byIsbn13One) {
