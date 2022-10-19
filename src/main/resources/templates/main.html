@@ -196,25 +196,20 @@
     function mypage() {
         let token = localStorage.getItem("RefreshToken");
         let token2 = localStorage.getItem("Authorization");
-
         $.ajax({
-            url: "http://localhost:8080/my-page",
-            beforeSend: function (xhr) {
-                xhr.setRequestHeader("Content-type","application/json");
-                xhr.setRequestHeader("RefreshToken", token);
-                xhr.setRequestHeader("Authorization", token2);
-
-
+            type: "GET",
+            dataType: "text",
+            url: "/test",
+            data: {
+            token: token
+            },
+            success: function (response) {
+                alert(response);
+            },
+            error: function (){
             }
-            ,error: function (request, status, error){
-                console.log(request)
-                console.log(status)
-                console.log(error)
-                alert("aa");
-            }
-        }).done(function (fragment) {
-            $("#list").replaceWith(fragment);
         });
+
     }
     </script>
 

@@ -2,8 +2,12 @@ package com.example.elasticsearchtest.controller;
 
 
 import com.example.elasticsearchtest.domain.BooksReview;
+import com.example.elasticsearchtest.domain.Member;
+import com.example.elasticsearchtest.domain.RefreshToken;
 import com.example.elasticsearchtest.dto.Response.ResponseDto;
+import com.example.elasticsearchtest.jwt.TokenProvider;
 import com.example.elasticsearchtest.repository.MongodbRepository;
+import com.example.elasticsearchtest.repository.RefreshTokenRepository;
 import com.example.elasticsearchtest.request.BookReviewRequest;
 
 import com.example.elasticsearchtest.request.DeleteCommentDtoRequest;
@@ -16,12 +20,15 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
 public class MongoTestController {
     private final MongodbRepository mongodbRepository;
     private final MongoDBService mongoDBService;
+    private final RefreshTokenRepository refreshTokenRepository;
+    private final MyPageController myPageController;
     @PostMapping("/comment")
     public ResponseDto<?> create_comment(@RequestBody BookReviewRequest bookReviewRequest, HttpServletRequest request) {
         //여기서는 받고 이제 service 부분에서 가보자..
@@ -44,6 +51,14 @@ public class MongoTestController {
         //저장전에 request 확인.
         mongoDBService.modify_comment(modifyCommentDtoRequest,request);
         return ResponseDto.success("good");
+    }
+
+    @GetMapping("/test")
+    public String test(@RequestParam("token") String token) {
+        System.out.println(token);
+        Member member = myPageController.TokenValidation2(token);
+        System.out.println(member.getNickName());
+        return token;
     }
     @GetMapping("/get")
     public ResponseDto<?> get_comment() {

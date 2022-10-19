@@ -50,17 +50,18 @@ public class MyPageController {
         model.addAttribute("bookList", bookList);//해당 그 게시물이 없으면 뭐 알아서 해주겠죠..?
         return "my_page";
     }
-
-
-
-
-
-
-
-
     public Member TokenValidation(HttpServletRequest request){
+
+        System.out.println(request.getHeader("RefreshToken"));
         //토큰 검증과정
         if (!tokenProvider.validateToken(request.getHeader("RefreshToken"))) {
+            throw new BusinessException("잘못된 JWT 토큰입니다", JWT_NOT_PERMIT);
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
+    public Member TokenValidation2(String token){
+        //토큰 검증과정
+        if (!tokenProvider.validateToken(token)) {
             throw new BusinessException("잘못된 JWT 토큰입니다", JWT_NOT_PERMIT);
         }
         return tokenProvider.getMemberFromAuthentication();

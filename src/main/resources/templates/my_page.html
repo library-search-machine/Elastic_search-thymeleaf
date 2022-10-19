@@ -69,6 +69,29 @@
             console.log(isbn);
             location.href = "/search_isbn?isbn=" + isbn;
         }
+        function mypage() {
+            let token = localStorage.getItem("RefreshToken");
+            let token2 = localStorage.getItem("Authorization");
+            alert("dmdkr")
+            window.location.reload();
+            $.ajax({
+                url: "http://localhost:8080/my-page",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Content-type","application/json");
+                    xhr.setRequestHeader("RefreshToken", token);
+                    xhr.setRequestHeader("Authorization", token2);
+                }
+                ,error: function (request, status, error){
+                    console.log(request)
+                    console.log(status)
+                    console.log(error)
+                    alert("로그인이 필요한 서비스입니다.");
+                    window.location.replace("http://localhost:8080/page/login");
+                }
+            }).done(function (fragment) {
+                $("#list").replaceWith(fragment);
+            });
+        }
 
 
         function delete_comment(id) {
@@ -89,9 +112,8 @@
                 },
                 success: function (success) {//성공을 했으면 현재 페이지에 새로고침을 하면 되는 거겠징
                     alert("코멘트 삭제 완료😀")
-                    setTimeout(function () {
-                        location.reload();
-                    }, 100); //0.1초 후 새로고침
+                    mypage();
+
                 }
             })
         }

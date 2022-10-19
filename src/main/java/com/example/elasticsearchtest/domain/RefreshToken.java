@@ -22,6 +22,5 @@ public class RefreshToken {
         id = member.getId();
         nickname = member.getNickName();
         token = refreshToken;
-
     }
 }
