@@ -9,6 +9,7 @@ import com.example.elasticsearchtest.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.elasticsearchtest.domain.Member;
@@ -34,18 +35,26 @@ public class RegisterService {
             throw  new BusinessException("회원가입 실패",EMAIL_INPUT_INVALID);
         }
         Member member = new Member(id,password, passwordEncoder);
+        System.out.println(member.getId() +" "+member.getNickName());
         memberRepository.save(member);
     }
 
+    @Transactional
+    public ResponseEntity<String> register_exists(String id) {
+        if(isPresentMember(id, true)!=null){
+            throw  new BusinessException("이미 중복된 아이디 입니다.",EMAIL_INPUT_INVALID);
+        }
+        else
+            return ResponseEntity.ok( "good");
+    }
     public ResponseEntity<MemberResponseDto> login(LoginRequestDto requestDto, HttpServletResponse response) {
-
         Member member = isPresentMember(requestDto.getId(), false);
         member.validatePassword(passwordEncoder, requestDto.getPassword());
         TokenDto tokenDto = tokenProvider.generateTokenDto(member);
         tokenToHeaders(tokenDto, response);
+        System.out.println(SecurityContextHolder.getContext().getAuthentication()+"avc");
         return ResponseEntity.ok(new MemberResponseDto(tokenDto));
     }
-
     public ResponseEntity<?> logout(HttpServletRequest request) {
         if (!tokenProvider.validateToken(request.getHeader("RefreshToken"))) {
             throw new BusinessException("잘못된 JWT 토큰입니다", JWT_NOT_PERMIT);

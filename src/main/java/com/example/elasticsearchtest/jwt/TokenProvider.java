@@ -14,6 +14,7 @@ import io.jsonwebtoken.security.SecurityException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -84,12 +85,12 @@ public class TokenProvider {
                 .build();
 
     }
-    @Cacheable(value="member",key="#refreshTokenObject.token",cacheManager = "cacheManager1")
+    @Cacheable(value="member",key="#refreshTokenObject.id",cacheManager = "cacheManager1")
     public void saveRepo(RefreshToken refreshTokenObject){
         refreshTokenRepository.save(refreshTokenObject);
 
     }
-    @Cacheable(value="member",key="#refreshTokenObject.token",cacheManager = "cacheManager1")
+    @Cacheable(value="member",key="#refreshTokenObject.id",cacheManager = "cacheManager1")
     public RefreshToken getRepo(RefreshToken refreshTokenObject){
         Optional<RefreshToken> refreshToken =refreshTokenRepository.findByToken(refreshTokenObject);
         return refreshToken.orElseThrow(
@@ -116,6 +117,7 @@ public class TokenProvider {
             log.info("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
 
         } catch (ExpiredJwtException e) {
+            //로컬스토리지에서 지우라는 명령이 필요함
             log.info("Expired JWT token, 만료된 JWT token 입니다.");
         } catch (UnsupportedJwtException e) {
             log.info("Unsupported JWT token, 지원되지 않는 JWT 토큰 입니다.");
@@ -131,14 +133,13 @@ public class TokenProvider {
         return optionalRefreshToken.orElse(null);
     }
 
-    @Transactional
+    @CacheEvict(value="member",key="#member.id",cacheManager = "cacheManager1")
     public ResponseEntity<?> deleteRefreshToken(Member member) {
         RefreshToken refreshToken = isPresentRefreshToken(member);
         if (null == refreshToken) {
             throw new BusinessException("TOKEN_NOT_FOUND", JWT_NOT_PERMIT);
 
         }
-
         refreshTokenRepository.delete(refreshToken);
         return new ResponseEntity<>("success", HttpStatus.OK);
 
