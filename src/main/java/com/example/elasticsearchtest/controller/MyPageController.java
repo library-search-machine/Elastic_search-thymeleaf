@@ -22,7 +22,7 @@ import java.util.List;
 //어떻게 해야하는 것인가.. 지금 내가 본거는 현재 쿠키에 있는 값을 뿌려주면 되고 리스트는 지금 나의 닉네임으로 작성된 댓글들을 불러오면 되는거임..?
 public class MyPageController {
     private final MyPageService myPageService;
-    @GetMapping("/my-page")
+    @GetMapping("/my-page")//
     public String my_page(Model model, HttpServletRequest request, HttpServletResponse response) {
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.//현재 쿠키들에는 isbn이 저장이 되어있음 어떻게 불러옴..?
         List<String> isbnList = new ArrayList<>();
