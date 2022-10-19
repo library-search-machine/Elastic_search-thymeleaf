@@ -71,7 +71,8 @@
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script>
-        $(document).ready(function () {
+
+    $(document).ready(function () {
             bsCustomFileInput.init()
         })
         function reload() {
@@ -162,22 +163,64 @@
             location.href = "/search_isbn?isbn=" + isbn;
         }
 
-        function get_detail_page(obj) {
-            let td = $(obj).children();
-            let isbn = td.eq(4).text();
-            location.href = "/search_isbn?isbn=" + isbn;
-        }
+
         function get_detail_page_recommendBook(obj) {
             let td = $(obj).children(".row").children(".col-md-8").children(".card-body").children(".isbn13");
             let isbn = td.eq(0).text();
             location.href = "/search_isbn?isbn=" + isbn;
         }
+    //로그아웃
+    function logout() {
+        let token = localStorage.getItem("RefreshToken");
+        let token2 = localStorage.getItem("Authorization");
+        localStorage.removeItem("Authorization")
+        localStorage.removeItem("RefreshToken")
+        $.ajax({
+            url: "http://localhost:8080/page/logout",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type","application/json");
+                xhr.setRequestHeader("RefreshToken", token);
+                xhr.setRequestHeader("Authorization", token2);
+            },
+            success: function (data,status,request) {
+                alert("aa");
+                window.location.replace("http://localhost:8080")
+            },error: function (request, status, error){
+                console.log(request)
+                console.log(status)
+                console.log(error)
+                alert("aa");
+            }
+        });
+    }
+    function mypage() {
+        let token = localStorage.getItem("RefreshToken");
+        let token2 = localStorage.getItem("Authorization");
 
+        $.ajax({
+            url: "http://localhost:8080/my-page",
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader("Content-type","application/json");
+                xhr.setRequestHeader("RefreshToken", token);
+                xhr.setRequestHeader("Authorization", token2);
+
+
+            }
+            ,error: function (request, status, error){
+                console.log(request)
+                console.log(status)
+                console.log(error)
+                alert("aa");
+            }
+        }).done(function (fragment) {
+            $("#list").replaceWith(fragment);
+        });
+    }
     </script>
 
 </head>
 
-<body>
+<body id="list">
 <!--  헤더 부분 -->
 <section class="hero is-info">
     <div class="hero-body">
@@ -190,13 +233,13 @@
             ◀뒤로가기
         </a>
 
-        <a href="http://localhost:8080/my-page" style="float: right;font-size: 15px;margin-right: 30px">
+        <a onclick="mypage()" style="float: right;font-size: 15px;margin-right: 30px">
             마이페이지🏠
         </a>
         <a id="login" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
             로그인
         </a>
-        <a id="log-out" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
+        <a id="log-out" onclick=logout() style="float: right;font-size: 15px;margin-right: 30px">
             로그아웃
         </a>
 

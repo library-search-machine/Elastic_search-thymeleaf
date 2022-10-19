@@ -13,10 +13,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @RedisHash(value = "member", timeToLive = 3600)
 public class RefreshToken {
-
+    @Id
     private Long id;
     private String nickname;
-    @Id
+
     private String token;
     public RefreshToken(Member member, String refreshToken) {
         id = member.getId();
