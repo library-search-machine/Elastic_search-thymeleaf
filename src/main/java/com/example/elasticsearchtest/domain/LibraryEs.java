@@ -8,7 +8,7 @@ import javax.persistence.Id;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Document(indexName = "testa")//다들 index이름이 달라서 새로 pull받으시면 indexName 수정하셔야합니다.~!
+@Document(indexName = "library")//다들 index이름이 달라서 새로 pull받으시면 indexName 수정하셔야합니다.~!
 @Mapping(mappingPath = "elastic/library-setting.json")
 @Setting(settingPath = "elastic/library-mapping.json")
 public class LibraryEs {
