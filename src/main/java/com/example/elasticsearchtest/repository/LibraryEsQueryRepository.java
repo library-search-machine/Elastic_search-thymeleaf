@@ -136,10 +136,10 @@ public class LibraryEsQueryRepository {
 
         BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
                 .should(prefixQueryBuilder);
-        //  .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
         NativeSearchQuery nativeSearchQuery = new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
+                .withCollapseField("isbn13")
                 .build();
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         String json = nativeSearchQuery.getQuery().toString();
