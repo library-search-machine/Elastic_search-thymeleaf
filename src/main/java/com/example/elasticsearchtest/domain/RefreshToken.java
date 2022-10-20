@@ -14,7 +14,7 @@ import javax.persistence.*;
 @RedisHash(value = "member", timeToLive = 3600)
 public class RefreshToken {
     @Id
-    private Long id;
+    private String id;
     private String nickname;
 
     private String token;
