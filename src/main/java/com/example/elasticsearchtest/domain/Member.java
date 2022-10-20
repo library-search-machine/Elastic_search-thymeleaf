@@ -18,17 +18,10 @@ import static com.example.elasticsearchtest.Errorhandler.ErrorCode.LOGIN_INPUT_I
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class
-Member implements Serializable {
+public class Member {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    private String id;
     private String nickName;
-
-    @Column(nullable = false)
-    @JsonIgnore
     private String password;
 
     public Member(String id, String password, PasswordEncoder passwordEncoder) {
