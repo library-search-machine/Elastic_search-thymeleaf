@@ -173,7 +173,6 @@ public class BookController {
 
     @GetMapping("/search_isbn")
     public String getBookIsbn(@RequestParam() String isbn, Model model, HttpServletResponse response,HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.
         Cookie cookie = new Cookie(isbn, isbn);
         cookie.setMaxAge(3600);//최근 쿠키를 저장을 함...최근 쿠키를 한시간 정도 저장을 함..
         response.addCookie(cookie);//새로운 쿠키를 저장
