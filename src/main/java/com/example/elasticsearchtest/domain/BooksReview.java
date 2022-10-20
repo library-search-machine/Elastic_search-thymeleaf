@@ -9,7 +9,6 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @Builder
 public class BooksReview {
-
     @Id
     private String id;
     private String title;//코멘트 제목
