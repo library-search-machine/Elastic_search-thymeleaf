@@ -44,7 +44,6 @@ public class RegisterController {
     //로그아웃
     @GetMapping(value = "/page/logout")
     public ResponseEntity<?> logout(HttpServletRequest request) {
-
         return registerService.logout(request);
     }
 }

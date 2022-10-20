@@ -74,6 +74,10 @@
         function create_comment() {
             let token = localStorage.getItem("RefreshToken");
             let token2 = localStorage.getItem("Authorization");
+            if(token==null){
+                alert("로그인이 필요한 서비스 입니다.")
+                window.location.replace("http://localhost:8080/page/login")
+            }
             let title = $("#modal_title").val();
             let comment = $("#modal_comment").val();
             let heart = $("#modal_heart").val();
@@ -105,36 +109,56 @@
                 }
             })
         }
-
-        function mypage() {
+        function logout() {
             let token = localStorage.getItem("RefreshToken");
             let token2 = localStorage.getItem("Authorization");
-
+            localStorage.removeItem("Authorization")
+            localStorage.removeItem("RefreshToken")
             $.ajax({
-                url: "http://localhost:8080/my-page",
+                url: "http://localhost:8080/page/logout",
                 beforeSend: function (xhr) {
                     xhr.setRequestHeader("Content-type","application/json");
                     xhr.setRequestHeader("RefreshToken", token);
                     xhr.setRequestHeader("Authorization", token2);
+                },
+                success: function (data,status,request) {
+                    alert("로그아웃 성공😀");
+                    window.location.replace("http://localhost:8080/")
+                },error: function (request, status, error){
+                    console.log(request)
+                    console.log(status)
+                    console.log(error)
+                    alert("로그아웃 성공😀");
+                    window.location.replace("http://localhost:8080/")
+                }
+            });
+        }
 
-
+        function mypage() {
+            let token = localStorage.getItem("RefreshToken");
+            let token2 = localStorage.getItem("Authorization");
+            $.ajax({
+                url: "http://localhost:8080/getnickname",
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader("Content-type","application/json");
+                    xhr.setRequestHeader("RefreshToken", token);
+                    xhr.setRequestHeader("Authorization", token2);
+                },success :function (data){
+                    window.location="http://localhost:8080/my-page/"+data
                 }
                 ,error: function (request, status, error){
                     console.log(request)
                     console.log(status)
                     console.log(error)
-                    alert("aa");
+                    alert("로그인 정보가 필요합니다.");
+                    window.location="http://localhost:8080/page/login/"
                 }
-            }).done(function (fragment) {
-                $("#list").replaceWith(fragment);
-            });
+            })
         }
     </script>
 
 </head>
-
 <body>
-
 <section class="hero is-info">
     <div class="hero-body">
         <a href="http://localhost:8080" class="title" onclick="reload()">
@@ -145,7 +169,8 @@
         <a href="javascript:history.back(-1)" style="float:left;font-size: 15px;margin-left: 30px">
             ◀뒤로가기
         </a>
-        <a onclick="myPage()" style="float: right;font-size: 15px;margin-right: 30px">
+
+        <a onclick="mypage()" style="float: right;font-size: 15px;margin-right: 30px">
             마이페이지🏠
         </a>
         <a id="login" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
@@ -154,6 +179,7 @@
         <a id="log-out" onclick=logout() style="float: right;font-size: 15px;margin-right: 30px">
             로그아웃
         </a>
+
     </div>
 </section>
 <section class="section" style="height: 1000px">
@@ -217,11 +243,12 @@
                 <p class="card-text" style="color: darkgray;font-size: 18px" th:text="${booksreviewlist.getTitle()}"></p>
                 <p class="card-text" style="font-size: 15px" th:text="' - '+${booksreviewlist.getComment()}"></p>
                 <br>
-                <p class="card-text"th:if="${booksreviewlist.getStars()}==5" style="font-size: 15px">별점: ⭐⭐⭐⭐⭐</p>
-                <p class="card-text"th:if="${booksreviewlist.getStars()}==4"style="font-size: 15px">별점: ⭐⭐⭐⭐</p>
-                <p class="card-text"th:if="${booksreviewlist.getStars()}==3"style="font-size: 15px">별점: ⭐⭐⭐</p>
-                <p class="card-text"th:if="${booksreviewlist.getStars()}==2"style="font-size: 15px">별점: ⭐⭐</p>
-                <p class="card-text"th:if="${booksreviewlist.getStars()}==1"style="font-size: 15px">별점: ⭐</p>
+                <p class="card-text" style="font-size: 12px" th:text="' 작성자 ID: '+${booksreviewlist.getNickname()}"></p>
+                <p class="card-text"th:if="${booksreviewlist.getStars()}==5" style="font-size: 12px">별점: ⭐⭐⭐⭐⭐</p>
+                <p class="card-text"th:if="${booksreviewlist.getStars()}==4"style="font-size: 12px">별점: ⭐⭐⭐⭐</p>
+                <p class="card-text"th:if="${booksreviewlist.getStars()}==3"style="font-size: 12px">별점: ⭐⭐⭐</p>
+                <p class="card-text"th:if="${booksreviewlist.getStars()}==2"style="font-size: 12px">별점: ⭐⭐</p>
+                <p class="card-text"th:if="${booksreviewlist.getStars()}==1"style="font-size: 12px">별점: ⭐</p>
             </div>
         </div>
     </div>

@@ -1,8 +1,11 @@
 package com.example.elasticsearchtest.controller;
 
 
+import com.example.elasticsearchtest.Errorhandler.BusinessException;
 import com.example.elasticsearchtest.domain.BooksReview;
+import com.example.elasticsearchtest.domain.Member;
 import com.example.elasticsearchtest.dto.Response.ResponseDto;
+import com.example.elasticsearchtest.jwt.TokenProvider;
 import com.example.elasticsearchtest.repository.MongodbRepository;
 import com.example.elasticsearchtest.request.BookReviewRequest;
 
@@ -10,6 +13,7 @@ import com.example.elasticsearchtest.request.DeleteCommentDtoRequest;
 import com.example.elasticsearchtest.request.ModifyCommentDtoRequest;
 import com.example.elasticsearchtest.service.MongoDBService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,11 +21,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
+import static com.example.elasticsearchtest.Errorhandler.ErrorCode.JWT_NOT_PERMIT;
+
 @RequiredArgsConstructor
 @RestController
 public class MongoTestController {
     private final MongodbRepository mongodbRepository;
     private final MongoDBService mongoDBService;
+    private final TokenProvider tokenProvider;
     @PostMapping("/comment")
     public ResponseDto<?> create_comment(@RequestBody BookReviewRequest bookReviewRequest, HttpServletRequest request) {
         //여기서는 받고 이제 service 부분에서 가보자..
@@ -58,9 +65,17 @@ public class MongoTestController {
 
     }
     @DeleteMapping("/deleteAll")
-    public ResponseEntity<String> delete(HttpServletRequest Hrequest) {
+    public ResponseEntity<String> delete(HttpServletRequest request) {
         mongodbRepository.deleteAll();
         return ResponseEntity.ok("delete good");
     }
 
+
+    public Member TokenValidation(HttpServletRequest request){
+        //토큰 검증과정
+        if (!tokenProvider.validateToken(request.getHeader("RefreshToken"))) {
+            throw new BusinessException("잘못된 JWT 토큰입니다", JWT_NOT_PERMIT);
+        }
+        return tokenProvider.getMemberFromAuthentication();
+    }
 }

@@ -177,15 +177,15 @@
                    th:text="${booksreviewlist.getTitle()}"></p>
                 <p class="card-text" style="font-size: 15px" th:text="' - '+${booksreviewlist.getComment()}"></p>
                 <br>
-                <p class="card-text" th:if="${booksreviewlist.getStars()}==5" style="font-size: 15px;width: 200px">별점:
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==5" style="font-size: 12px;width: 200px">별점:
                     ⭐⭐⭐⭐⭐</p>
-                <p class="card-text" th:if="${booksreviewlist.getStars()}==4" style="font-size: 15px;width: 200px">별점:
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==4" style="font-size: 12px;width: 200px">별점:
                     ⭐⭐⭐⭐</p>
-                <p class="card-text" th:if="${booksreviewlist.getStars()}==3" style="font-size: 15px;width: 200px">별점:
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==3" style="font-size: 12px;width: 200px">별점:
                     ⭐⭐⭐</p>
-                <p class="card-text" th:if="${booksreviewlist.getStars()}==2" style="font-size: 15px;width: 200px">별점:
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==2" style="font-size: 12px;width: 200px">별점:
                     ⭐⭐</p>
-                <p class="card-text" th:if="${booksreviewlist.getStars()}==1" style="font-size: 15px;width: 200px">별점:
+                <p class="card-text" th:if="${booksreviewlist.getStars()}==1" style="font-size: 12px;width: 200px">별점:
                     ⭐</p>
                 <p class="card-text" style="color: darkgray;font-size: 13px;width: 200px"
                    th:text="'책제목: '+${booksreviewlist.getBookName()}"></p>

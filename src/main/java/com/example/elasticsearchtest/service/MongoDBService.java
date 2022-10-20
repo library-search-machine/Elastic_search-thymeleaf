@@ -29,7 +29,6 @@ public class MongoDBService {
     public ResponseDto<?> create_comment(BookReviewRequest bookReviewRequest, HttpServletRequest request) {
         //토큰 검증과정
         Member member= TokenValidation(request);
-
         BooksReview booksReview = BooksReview.builder() //새로운 코멘트를 생성하고 이제 이것을 넣어줌
                 .title(bookReviewRequest.getTitle())
                 .comment(bookReviewRequest.getComment())

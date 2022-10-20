@@ -162,8 +162,6 @@
             let isbn = td.eq(4).text();
             location.href = "/search_isbn?isbn=" + isbn;
         }
-
-
         function get_detail_page_recommendBook(obj) {
             let td = $(obj).children(".row").children(".col-md-8").children(".card-body").children(".isbn13");
             let isbn = td.eq(0).text();
@@ -183,13 +181,14 @@
                 xhr.setRequestHeader("Authorization", token2);
             },
             success: function (data,status,request) {
-                alert("aa");
-                window.location.replace("http://localhost:8080")
+                alert("로그아웃 성공😀");
+                window.location.replace("http://localhost:8080/")
             },error: function (request, status, error){
                 console.log(request)
                 console.log(status)
                 console.log(error)
-                alert("aa");
+                alert("로그아웃 성공😀");
+                window.location.replace("http://localhost:8080/")
             }
         });
     }
@@ -198,29 +197,27 @@
         let token2 = localStorage.getItem("Authorization");
 
         $.ajax({
-            url: "http://localhost:8080/my-page",
+            url: "http://localhost:8080/getnickname",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Content-type","application/json");
                 xhr.setRequestHeader("RefreshToken", token);
                 xhr.setRequestHeader("Authorization", token2);
+            },success :function (data){
 
-
+                window.location="http://localhost:8080/my-page/"+data
             }
             ,error: function (request, status, error){
                 console.log(request)
                 console.log(status)
                 console.log(error)
-                alert("aa");
+                alert("로그인 정보가 필요합니다.");
+                window.location="http://localhost:8080/page/login/"
             }
-        }).done(function (fragment) {
-            $("#list").replaceWith(fragment);
-        });
+        })
     }
     </script>
 
 </head>
-
-<body id="list">
 <!--  헤더 부분 -->
 <section class="hero is-info">
     <div class="hero-body">
@@ -589,6 +586,6 @@
     </nav>
     <span>Showing results # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
 </div>
-</body>
+
 
 </html>
