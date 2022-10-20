@@ -4,6 +4,7 @@ package com.example.elasticsearchtest.controller;
 import com.example.elasticsearchtest.Errorhandler.BusinessException;
 import com.example.elasticsearchtest.domain.Member;
 import com.example.elasticsearchtest.jwt.TokenProvider;
+import com.example.elasticsearchtest.repository.MemberRepository;
 import com.example.elasticsearchtest.response.BookReviewResponse;
 import com.example.elasticsearchtest.response.MyPageResponseDto;
 import com.example.elasticsearchtest.service.MyPageService;
@@ -12,6 +13,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -29,10 +31,11 @@ import static com.example.elasticsearchtest.Errorhandler.ErrorCode.JWT_NOT_PERMI
 public class MyPageController {
     private final MyPageService myPageService;
     private final TokenProvider tokenProvider;
-    @GetMapping("/my-page")
-    public String my_page(Model model, HttpServletRequest request, HttpServletResponse response) {
+    private final MemberRepository memberRepository;
+    @GetMapping("/my-page/{id}")
+    public String my_page(Model model, HttpServletRequest request, HttpServletResponse response,@PathVariable("id") String id) {
         //토큰 검증과정
-        Member member = TokenValidation(request);
+        Member member = memberRepository.findByNickName(id).get();
         Cookie[] cookies = request.getCookies();//전체 쿠키를 받는 애 여기서 isbn만 뽑아와야할듯합니다.//현재 쿠키들에는 isbn이 저장이 되어있음 어떻게 불러옴..?
         List<String> isbnList = new ArrayList<>();
         List<MyPageResponseDto> bookList = new ArrayList<>();
@@ -44,18 +47,11 @@ public class MyPageController {
             bookList=myPageService.test(isbnList);
             Collections.reverse(bookList);//최근 순으로 정렬하기 위해서 collections reverse 함
         }
-
         List<BookReviewResponse> commentList = myPageService.findByNickname(member.getNickName());
         model.addAttribute("commentList", commentList);//해당 그 게시물이 없으면 뭐 알아서 해주겠죠..?
         model.addAttribute("bookList", bookList);//해당 그 게시물이 없으면 뭐 알아서 해주겠죠..?
         return "my_page";
     }
-
-
-
-
-
-
 
 
     public Member TokenValidation(HttpServletRequest request){
