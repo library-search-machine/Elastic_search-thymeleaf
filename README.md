@@ -1,10 +1,4 @@
 # Elastic_search-thymeleaf
- 
- 안내: pull 받고나서 LibraryEs class indexName 다들 Es Index으로 수정하시면 됩니다
- 
- 
- 
- 
 파일구조   
 ```
 main
@@ -59,6 +53,24 @@ main
 
 
 ## API 리스트
+|기능|메소드|URL|
+|------|---|---|
+|로그인 페이지 가져오기|GET|/page/login|
+|아이디 중복체크|GET|/register/exists|
+|회원가입|POST|/register|
+|로그인|POST|/login|
+|로그아웃|GET|/login|
+|사용자아이디 가져오기|GET|/getnickname|
+|메인페이지 가져오기|GET|/|
+|자동완성 제목 가져오기|GET|/autocomplete_book|
+|도서 검색하기|GET|/search?keyword= &type= &page= |
+|도서 상세검색하기|GET|/fullsearch?bookname=&authors=@&publisher=@&firstPublication=&endPublication=&genre=&library=@&page=|
+|상세페이지 가져오기|GET|/search_isbn/{isbn13}|
+|댓글 작성|POST|/comment|
+|댓글 삭제|POST|/delete_comment|
+|댓글 수정|POST|/modify_comment|
+|마이페이지 가져오기|GET|/my-page/{id}|
+<br>
 
 ## ERD   
 
