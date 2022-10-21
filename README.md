@@ -35,7 +35,7 @@ main
 **주요 화면**  
 ![GIF]()
 
-## 핵심 기능 Key Feature
+## 프로젝트 MVP기능😎
 - template 제공 - 상단 초록색 버튼 [`Use this template`](https://github.com/siyoungoh/proj-template/generate)을 사용해 템플릿으로 사용해보세요.
 - 프로젝트 파악을 위한 기본 설명 [README.md](https://github.com/siyoungoh/proj-template/blob/master/README.md)
 - [issue](https://github.com/siyoungoh/proj-template/issues/1)
@@ -55,6 +55,8 @@ main
 
 > *프로젝트 포트폴리오로 사용할 경우 아래 추가하면 상대가 파악하기 쉽습니다.*
 ## 아키텍쳐
+![아키텍처](https://user-images.githubusercontent.com/100353794/197140964-7495467e-7a64-4bcd-a18a-f7c8ee5187db.PNG)
+
 
 ## API 리스트
 
