@@ -95,7 +95,7 @@
                     let find_name = $("select[name=find_name]").val() // 검색 종류
                     if(find_name=="title"){
                         $.ajax({
-                            url: "http://localhost:8080/autocomplete_book",
+                            url: "/autocomplete_book",
                             dataType: "json",
                             data: {
                                 q: request.term
@@ -113,7 +113,7 @@
             $("#modal_book_name").autocomplete({
                 source: function (request, response) {
                     $.ajax({
-                        url: "http://localhost:8080/autocomplete_book",
+                        url: "/autocomplete_book",
                         dataType: "json",
                         data: {
                             q: request.term
@@ -174,7 +174,7 @@
         localStorage.removeItem("Authorization")
         localStorage.removeItem("RefreshToken")
         $.ajax({
-            url: "http://localhost:8080/page/logout",
+            url: "/page/logout",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Content-type","application/json");
                 xhr.setRequestHeader("RefreshToken", token);
@@ -182,13 +182,13 @@
             },
             success: function (data,status,request) {
                 alert("로그아웃 성공😀");
-                window.location.replace("http://localhost:8080/")
+                window.location.replace("/")
             },error: function (request, status, error){
                 console.log(request)
                 console.log(status)
                 console.log(error)
                 alert("로그아웃 성공😀");
-                window.location.replace("http://localhost:8080/")
+                window.location.replace("/")
             }
         });
     }
@@ -197,21 +197,21 @@
         let token2 = localStorage.getItem("Authorization");
 
         $.ajax({
-            url: "http://localhost:8080/getnickname",
+            url: "/getnickname",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Content-type","application/json");
                 xhr.setRequestHeader("RefreshToken", token);
                 xhr.setRequestHeader("Authorization", token2);
             },success :function (data){
 
-                window.location="http://localhost:8080/my-page/"+data
+                window.location="/my-page/"+data
             }
             ,error: function (request, status, error){
                 console.log(request)
                 console.log(status)
                 console.log(error)
                 alert("로그인 정보가 필요합니다.");
-                window.location="http://localhost:8080/page/login/"
+                window.location="/page/login/"
             }
         })
     }
@@ -221,7 +221,7 @@
 <!--  헤더 부분 -->
 <section class="hero is-info">
     <div class="hero-body">
-        <a href="http://localhost:8080" class="title" onclick="reload()">
+        <a href="/" class="title" onclick="reload()">
             도서관 데이터 검색
         </a>
     </div>
@@ -233,7 +233,7 @@
         <a onclick="mypage()" style="float: right;font-size: 15px;margin-right: 30px">
             마이페이지🏠
         </a>
-        <a id="login" href="http://localhost:8080/page/login" style="float: right;font-size: 15px;margin-right: 30px">
+        <a id="login" href="/page/login" style="float: right;font-size: 15px;margin-right: 30px">
             로그인
         </a>
         <a id="log-out" onclick=logout() style="float: right;font-size: 15px;margin-right: 30px">

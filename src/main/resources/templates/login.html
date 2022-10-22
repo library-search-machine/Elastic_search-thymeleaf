@@ -145,7 +145,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "http://localhost:8080/register",
+                url: "/register",
                 dataType: "text",
                 data: {
                     id: username,
@@ -153,7 +153,7 @@
                 },
                 success: function (response) {
                     alert("회원가입을 축하드립니다!😀")
-                    window.location.replace("http://localhost:8080/page/login")
+                    window.location.replace("/page/login")
                 }
             });
         }
@@ -183,7 +183,7 @@
                 type: "post",
                 headers: {'Content-Type': 'application/json'},
                 data : JSON.stringify(obj),
-                url: "http://localhost:8080/login",
+                url: "/login",
                 dataType: "json",
                 success: function (data,status,request) {
                     //로컬스토리지에 데이터 추가
@@ -191,7 +191,7 @@
                     console.log(request.getResponseHeader('RefreshToken'))
                     localStorage.setItem("Authorization", request.getResponseHeader('Authorization'));
                     localStorage.setItem("RefreshToken", request.getResponseHeader('RefreshToken'));
-                    window.location.replace("http://localhost:8080")
+                    window.location.replace("/")
                 },error: function (request, status, error){
                     console.log(request)
                     console.log(status)
@@ -204,7 +204,7 @@
 <body>
 <section class="hero is-info">
     <div class="hero-body">
-        <a href="http://localhost:8080" class="title" onclick="reload()">
+        <a href="/" class="title" onclick="reload()">
             도서관 데이터 검색
         </a>
     </div>
