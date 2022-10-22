@@ -72,6 +72,9 @@
 
 
         function delete_comment(id) {
+            let authorization = localStorage.getItem("Authorization");
+            let refreshToken = localStorage.getItem("RefreshToken");
+
             $.ajax({
                 type: "DELETE",
                 url: "/delete_comment",
@@ -93,6 +96,9 @@
             let title = $("#modal_title").val();
             let comment = $("#modal_comment").val();
             let stars = $("#modal_heart").val();
+            let authorization = localStorage.getItem("Authorization");
+            let refreshToken = localStorage.getItem("RefreshToken");
+
             $.ajax({
                 type: "POST",
                 url: "/modify_comment",
@@ -119,7 +125,7 @@
 
 <section class="hero is-info">
     <div class="hero-body">
-        <a href="http://localhost:8080" class="title" onclick="reload()">
+        <a href="/" class="title" onclick="reload()">
             도서관 데이터 검색
         </a>
     </div>

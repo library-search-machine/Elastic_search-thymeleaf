@@ -1,6 +1,7 @@
 package com.example.elasticsearchtest.domain;
 
 import lombok.*;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.persistence.Id;
 
@@ -8,6 +9,7 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Document("book_report")
 public class BooksReview {
 
     @Id
