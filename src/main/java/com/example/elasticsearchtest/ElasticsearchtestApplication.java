@@ -152,8 +152,6 @@ public class ElasticsearchtestApplication {
     }
     /*
     public CommandLineRunner demo(LibraryEsRepository libraryEsRepository) {
-
-
         return (args) -> {
             long beforeTime = System.currentTimeMillis(); //코드 실행 전에 시간 받아오기
 

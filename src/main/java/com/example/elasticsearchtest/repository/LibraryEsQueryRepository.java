@@ -39,13 +39,11 @@ public class LibraryEsQueryRepository {
                 .must(QueryBuilders.matchQuery("bookName",keyword))//문장이 완전 같지 않아도 검색
                 .should(QueryBuilders.termQuery("bookName.keyword",keyword))//완전히 일치하는 문자열
                 .should(QueryBuilders.matchPhraseQuery("bookName",keyword));
-
         NativeSearchQuery nativeSearchQuery= new NativeSearchQueryBuilder()
                 .withQuery(boolQueryBuilder)
                 .withPageable(pageable)
                 .withCollapseBuilder(collapseBuilder)
                 .build();
-
         SearchHits<LibraryEs> search = operations.search(nativeSearchQuery, LibraryEs.class);
         List<SearchHit<LibraryEs>> searchHitList = search.getSearchHits();
         List<LibraryEs> list = new ArrayList<>();

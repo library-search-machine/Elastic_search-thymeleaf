@@ -174,7 +174,7 @@
         localStorage.removeItem("Authorization")
         localStorage.removeItem("RefreshToken")
         $.ajax({
-            url: "http://localhost:8080/page/logout",
+            url: "http://localhost:8080/logout",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader("Content-type","application/json");
                 xhr.setRequestHeader("RefreshToken", token);
