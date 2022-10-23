@@ -101,6 +101,7 @@
                                 q: request.term
                             },
                             success: function (data) {
+                                console.log(data)
                                 response(data);
                             }
                         });
@@ -222,7 +223,7 @@
 <section class="hero is-info">
     <div class="hero-body">
         <a href="/" class="title" onclick="reload()">
-            도서관 데이터 검색
+            Books In Seoul
         </a>
     </div>
     <div>
@@ -586,6 +587,4 @@
     </nav>
     <span>Showing results # [[${startCount}]] to [[${endCount}]] of [[${totalItems}]]</span>
 </div>
-
-
 </html>
