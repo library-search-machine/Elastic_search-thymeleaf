@@ -13,8 +13,8 @@
  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">&nbsp;<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/redis-A41E11?style=for-the-badge&logo=redis&logoColor=white">
 
 
-## 아키🛠
-![아키텍처](https://user-images.githubusercontent.com/100353794/197140964-7495467e-7a64-4bcd-a18a-f7c8ee5187db.PNG)
+## 아키텍처🛠
+![ㅎㅇㅎㅇㅎ](https://user-images.githubusercontent.com/100353794/197387198-a5ac477c-5e1e-4f27-98bf-a7f3b4aed65e.PNG)
 
 ## 파일 구조💾
 ```
