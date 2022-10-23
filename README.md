@@ -13,7 +13,7 @@
  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/html5-E34F26?style=for-the-badge&logo=html5&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">&nbsp;<img src="https://img.shields.io/badge/mysql-4479A1?style=for-the-badge&logo=mysql&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/mongoDB-47A248?style=for-the-badge&logo=MongoDB&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/elasticsearch-005571?style=for-the-badge&logo=elasticsearch&logoColor=white">&nbsp;<img src="https://img.shields.io/badge/redis-A41E11?style=for-the-badge&logo=redis&logoColor=white">
 
 
-## 아키텍차🛠
+## 아키텍🛠
 ![아키텍처](https://user-images.githubusercontent.com/100353794/197140964-7495467e-7a64-4bcd-a18a-f7c8ee5187db.PNG)
 
 ## 파일 구조💾
@@ -85,9 +85,11 @@ main
     - **로그인 정보가 없으면 로그인창으로 이동**
     - **자신이 조회했던 책들을 조회할 수 있음 책들을 클릭하면 해당 도서 상세페이지로 이동**  
     - **자신이 작성했던 댓글들을 확인할 수 있고 삭제와 수정이 가능함.**
-## ERD   
+## ERD⚙
+![erd](https://user-images.githubusercontent.com/100353794/197386822-24305e2a-6dcd-4e20-983f-869c6587ce1a.PNG)
 
-## MVP기능 및 트러블슈팅
+
+## MVP기능🎇 및 트러블슈팅🧨
    - **프로젝트를 진행하면서 발생했던 이슈와 트러블슈팅은 우리 팀의 notion페이지에 작성하였으니 하단 링크를 방문하면 확인할 수 있다~😊<br>
      https://nonchalant-sturgeon-21a.notion.site/9-73a7e47912c14b85b8be59a82caf0f59**
 
